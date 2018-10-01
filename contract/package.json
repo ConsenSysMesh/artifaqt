@@ -7,12 +7,15 @@
         "test": "test"
     },
     "scripts": {
+        "dev": "docker run -d --name ganache --net=host trufflesuite/ganache-cli:latest --port=7545 --seed=42 --gasPrice=1 --networkId=42",
+        "dev-stop": "docker rm -f ganache",
         "compile": "truffle compile",
+        "migrate": "truffle migrate --network=ganache --reset",
+        "test": "truffle test --network=ganache",
         "fix:js": "eslint --fix test/** migrations/**",
         "lint:js": "eslint test/** migrations/**",
         "lint:sol": "solhint contracts/*.sol contracts/*/*.sol test/*.sol test/*/*.sol",
         "lint": "npm run lint:js && npm run lint:sol",
-        "test": "truffle test --network=ganache",
         "coverage": "solidity-coverage"
     },
     "author": "",

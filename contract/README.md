@@ -29,7 +29,7 @@ It will run all tests. It needs to have a running local ethereum server on port 
 $ npm run dev-stop
 ```
 
-It kills and removes the ganache docker container.
+It kills and removes the `ganache` docker container.
 
 ## Contribuition guide
 

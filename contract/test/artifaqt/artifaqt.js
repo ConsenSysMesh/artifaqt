@@ -9,7 +9,7 @@ let owner;
 let player;
 
 // Account that tries to hack the game
-let hacker;
+// let hacker;
 
 // Contract instance
 let artifaqt;
@@ -20,7 +20,7 @@ contract('Artifaqt', (accounts) => {
         artifaqt = await ArtifaqtContract.new({ from: owner });
 
         player = accounts[1];
-        hacker = accounts[9];
+        // hacker = accounts[9];
     });
 
     it('creation: deploy with name', async () => {

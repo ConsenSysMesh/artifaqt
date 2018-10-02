@@ -12,6 +12,7 @@
         "compile": "truffle compile",
         "migrate": "truffle migrate --network=ganache --reset",
         "test": "truffle test --network=ganache",
+        "test:artifaqt": "truffle test --network=ganache ./test/artifaqt/*",
         "fix:js": "eslint --fix test/** migrations/**",
         "lint:js": "eslint test/** migrations/**",
         "lint:sol": "solhint contracts/*.sol contracts/*/*.sol test/*.sol test/*/*.sol",

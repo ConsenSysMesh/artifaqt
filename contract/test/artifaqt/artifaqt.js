@@ -1,4 +1,4 @@
-
+const { ecProduce } = require('../helpers/ecProduce');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -14,15 +14,6 @@ let hacker;
 // Contract instance
 let artifaqt;
 
-// TODO: remove this
-function toHex(str) {
-    let hex = '';
-    for (var i = 0; i < str.length; i++) {
-        hex += '' + str.charCodeAt(i).toString(16)
-    }
-    return hex;
-}
-
 contract('Artifaqt', (accounts) => {
     beforeEach(async () => {
         owner = accounts[0];
@@ -33,15 +24,27 @@ contract('Artifaqt', (accounts) => {
     });
 
     it('creation: deploy with name', async () => {
-        assert.strictEqual('Artifaqt', await artifaqt.name.call());
-        assert.strictEqual('ATQ', await artifaqt.symbol.call());
+        assert.strictEqual(await artifaqt.name.call(), 'Artifaqt');
+        assert.strictEqual(await artifaqt.symbol.call(), 'ATQ');
     });
 
+    // TODO: check token was sent back to the player for signing the correct message
     it('claim token: send signed message to receive token', async () => {
-        let msg = "Those who were never baptised.";
-        let signature = web3.eth.sign(player, "0x" + msg);
-        let r = "0x" + signature.slice(0, 64);
-        let s = "0x" + signature.slice(64, 128);
-        let v = "0x" + signature.slice(128, 130);
+        const {
+            prefixedMsgHash,
+            vDecimal,
+            r,
+            s,
+        } = ecProduce('Those who were never baptised', player);
+
+        assert.strictEqual(
+            await artifaqt.recoverAddr.call(
+                prefixedMsgHash,
+                vDecimal,
+                r,
+                s,
+            ),
+            player,
+        );
     });
 });

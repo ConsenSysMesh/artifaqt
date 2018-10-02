@@ -1,0 +1,72 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+* {
+ 	box-sizing: border-box;
+}
+
+
+.App {
+	padding: 30px;
+}
+
+.grid {
+	width: 300px;
+	background: black;
+	position: relative;
+}
+
+button {
+	margin-top: 300px;
+}
+
+.tile {
+	width: 100px;
+	height: 100px;
+	padding: 40px 10px;
+	text-align: center;
+	display: inline-block;
+	background: white;
+	position: absolute;
+	transition: all 100ms ease-in-out;
+}
+
+.tile.empty {
+	background: black;
+}
+
+.tile-1{
+  background: url("./assets/1.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-2{
+  background: url("./assets/2.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-3{
+  background: url("./assets/3.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-4{
+  background: url("./assets/4.png") no-repeat center center;
+  background-size: contain;
+}
+.tile-5{
+  background: url("./assets/5.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-6{
+  background: url("./assets/6.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-7{
+  background: url("./assets/7.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-8{
+  background: url("./assets/8.jpg") no-repeat center center;
+  background-size: contain;
+}

@@ -1,7 +1,7 @@
-const { toHex } = require('../helpers/toHex');
+const { toHex } = require('./toHex');
 
 module.exports = {
-    ecProduce: (message, address) => {
+    signMessage: (message, address) => {
         const signature = web3.eth.sign(address, `0x${toHex(message)}`).substr(2);
         const v = `0x${signature.slice(128, 130)}`;
         let vDecimal = web3.toDecimal(v);

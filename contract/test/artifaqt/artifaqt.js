@@ -1,4 +1,4 @@
-const { ecProduce } = require('../helpers/ecProduce');
+const { signMessage } = require('../helpers/signMessage');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -14,6 +14,10 @@ let player;
 // Contract instance
 let artifaqt;
 
+let sins = [
+    'Those who were never baptised',
+];
+
 contract('Artifaqt', (accounts) => {
     beforeEach(async () => {
         owner = accounts[0];
@@ -28,14 +32,13 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(await artifaqt.symbol.call(), 'ATQ');
     });
 
-    // TODO: check token was sent back to the player for signing the correct message
-    it('claim token: send signed message to receive token', async () => {
+    it('claim token: we can recover the address from the signature', async () => {
         const {
             prefixedMsgHash,
             vDecimal,
             r,
             s,
-        } = ecProduce('Those who were never baptised', player);
+        } = signMessage('Any kind of message', player);
 
         assert.strictEqual(
             await artifaqt.recoverAddr.call(
@@ -45,6 +48,36 @@ contract('Artifaqt', (accounts) => {
                 s,
             ),
             player,
+        );
+    });
+
+    it('claim token: Limbo can be claimed', async () => {
+        const sin = sins[0];
+        const sinHash = web3.sha3(web3.sha3(sin));
+        const {
+            prefixedMsgHash,
+            vDecimal,
+            r,
+            s,
+        } = signMessage(sinHash, player);
+
+        let c = await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sin, { from: player });
+        console.log(c);
+
+        console.log("prefixedMsgHash = " + prefixedMsgHash);
+        console.log("vDecimal = " + vDecimal);
+        console.log("r = " + r);
+        console.log("s = " + s);
+
+        console.log(web3.sha3(sin));
+        console.log(sinHash);
+
+        let b = await artifaqt.balanceOf.call(player);
+        console.log("token count =" + b.toNumber());
+
+        assert.equal(
+            await artifaqt.balanceOf.call(player),
+            1
         );
     });
 });

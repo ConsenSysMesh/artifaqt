@@ -1,4 +1,4 @@
-const { signMessage } = require('../helpers/signMessage');
+const { signMessage, signHexMessage } = require('../helpers/signMessage');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -9,7 +9,7 @@ let owner;
 let player;
 
 // Account that tries to hack the game
-// let hacker;
+let hacker;
 
 // Contract instance
 let artifaqt;
@@ -24,7 +24,7 @@ contract('Artifaqt', (accounts) => {
         artifaqt = await ArtifaqtContract.new({ from: owner });
 
         player = accounts[1];
-        // hacker = accounts[9];
+        hacker = accounts[9];
     });
 
     it('creation: deploy with name', async () => {
@@ -70,33 +70,21 @@ contract('Artifaqt', (accounts) => {
         );
     })
 
-    // it('claim token: Limbo can be claimed', async () => {
-    //     const sin = sins[0];
-    //     const sinHash = web3.sha3(web3.sha3(sin));
-    //     const {
-    //         prefixedMsgHash,
-    //         vDecimal,
-    //         r,
-    //         s,
-    //     } = signMessage(sinHash, player);
+    it('claim token: Limbo', async () => {
+        const sin = web3.sha3(sins[0]); // Limbo sin
+        const sinHash = web3.sha3(sin, {encoding: 'hex'});
+        const {
+            prefixedMsgHash,
+            vDecimal,
+            r,
+            s,
+        } = signMessage(sinHash, player);
 
-    //     let c = await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sin, { from: player });
-    //     console.log(c);
+        await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sinHash, { from: player });
 
-    //     console.log("prefixedMsgHash = " + prefixedMsgHash);
-    //     console.log("vDecimal = " + vDecimal);
-    //     console.log("r = " + r);
-    //     console.log("s = " + s);
-
-    //     console.log(web3.sha3(sin));
-    //     console.log(sinHash);
-
-    //     let b = await artifaqt.balanceOf.call(player);
-    //     console.log("token count =" + b.toNumber());
-
-    //     assert.equal(
-    //         await artifaqt.balanceOf.call(player),
-    //         1
-    //     );
-    // });
+        assert.equal(
+            (await artifaqt.balanceOf.call(player)).toNumber(),
+            1
+        );
+    });
 });

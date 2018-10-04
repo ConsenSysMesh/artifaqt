@@ -44,8 +44,10 @@ contract Artifaqt is EIP721 {
     {
         bytes32 lust = 0xfc3fe4f31dfabb1d4f80738b0c84c940483c755284943811599526cb3d4bd237;
 
+        emit Hash(keccak256(abi.encodePacked(lust, msg.sender)));
+
         require(isSigned(msg.sender, _msgHash, _v, _r, _s));
-        require(_sin == keccak256(abi.encodePacked(lust, bytes32(msg.sender))));
+        require(_sin == keccak256(abi.encodePacked(lust, msg.sender)));
 
         addToken(msg.sender, totalSupply());
 
@@ -53,4 +55,5 @@ contract Artifaqt is EIP721 {
     }
 
     event TokenClaimed(bytes32 sin, bytes32 sinHash, address player);
+    event Hash(bytes32 hash);
 }

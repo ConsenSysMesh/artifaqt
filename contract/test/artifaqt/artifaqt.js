@@ -32,7 +32,7 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(await artifaqt.symbol.call(), 'ATQ');
     });
 
-    it('claim token: we can recover the address from the signature', async () => {
+    it('signature: we can recover the address from the signature', async () => {
         const {
             prefixedMsgHash,
             vDecimal,
@@ -51,33 +51,52 @@ contract('Artifaqt', (accounts) => {
         );
     });
 
-    it('claim token: Limbo can be claimed', async () => {
-        const sin = sins[0];
-        const sinHash = web3.sha3(web3.sha3(sin));
+    it('signature: can verify an address signed a message', async () => {
         const {
             prefixedMsgHash,
             vDecimal,
             r,
             s,
-        } = signMessage(sinHash, player);
+        } = signMessage('Any kind of message', player);
 
-        let c = await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sin, { from: player });
-        console.log(c);
-
-        console.log("prefixedMsgHash = " + prefixedMsgHash);
-        console.log("vDecimal = " + vDecimal);
-        console.log("r = " + r);
-        console.log("s = " + s);
-
-        console.log(web3.sha3(sin));
-        console.log(sinHash);
-
-        let b = await artifaqt.balanceOf.call(player);
-        console.log("token count =" + b.toNumber());
-
-        assert.equal(
-            await artifaqt.balanceOf.call(player),
-            1
+        assert.isTrue(
+            await artifaqt.isSigned.call(
+                player,
+                prefixedMsgHash,
+                vDecimal,
+                r,
+                s,
+            ),
         );
-    });
+    })
+
+    // it('claim token: Limbo can be claimed', async () => {
+    //     const sin = sins[0];
+    //     const sinHash = web3.sha3(web3.sha3(sin));
+    //     const {
+    //         prefixedMsgHash,
+    //         vDecimal,
+    //         r,
+    //         s,
+    //     } = signMessage(sinHash, player);
+
+    //     let c = await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sin, { from: player });
+    //     console.log(c);
+
+    //     console.log("prefixedMsgHash = " + prefixedMsgHash);
+    //     console.log("vDecimal = " + vDecimal);
+    //     console.log("r = " + r);
+    //     console.log("s = " + s);
+
+    //     console.log(web3.sha3(sin));
+    //     console.log(sinHash);
+
+    //     let b = await artifaqt.balanceOf.call(player);
+    //     console.log("token count =" + b.toNumber());
+
+    //     assert.equal(
+    //         await artifaqt.balanceOf.call(player),
+    //         1
+    //     );
+    // });
 });

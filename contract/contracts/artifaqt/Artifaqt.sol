@@ -50,53 +50,25 @@ contract Artifaqt is EIP721 {
         // Make sure lust is the sin
         require(_sin == keccak256(abi.encodePacked(lust, msg.sender)));
 
+        // Make sure the message is 
+        require(_message == keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n66", hashToString(_sin))));
+
         addToken(msg.sender, totalSupply());
 
         emit TokenClaimed(_sin, keccak256(abi.encodePacked(lust)), msg.sender);
     }
 
-    function hashToString(bytes32 _hash) public returns (string) {
-        bytes memory bytesArray = new bytes(66);
-        bytesArray[0] = byte("0");
-        bytesArray[1] = byte("1");
-
-        uint index = 2;
-        for (uint256 i; i < 32; i++) {
-            byte high = _hash[i] & 0xf0;
-            bytesArray[index] = byteToChar(high);
-            index++;
-
-            byte low = _hash[i] & 0x0f;
-            bytesArray[index] = byteToChar(low);
-            index++;
+    function hashToString(bytes32 _hash) public pure returns(string) {
+        bytes memory alphabet = "0123456789abcdef";
+        bytes memory str = new bytes(66);
+        str[0] = "0";
+        str[1] = "x";
+        for (uint i = 0; i < 32; i++) {
+            str[2+i*2] = alphabet[uint(_hash[i] >> 4)];
+            str[3+i*2] = alphabet[uint(_hash[i] & 0x0f)];
         }
-
-        emit String(string(bytesArray));
-
-        return string(bytesArray);
-        return "";
-    }
-
-    function byteToChar(byte b) returns (byte) {
-        if (b == 0) return byte("0");
-        if (b == 1) return byte("1");
-        if (b == 2) return byte("2");
-        if (b == 3) return byte("3");
-        if (b == 4) return byte("4");
-        if (b == 5) return byte("5");
-        if (b == 6) return byte("6");
-        if (b == 7) return byte("7");
-        if (b == 8) return byte("8");
-        if (b == 9) return byte("9");
-        if (b == 10) return byte("a");
-        if (b == 11) return byte("b");
-        if (b == 12) return byte("c");
-        if (b == 13) return byte("d");
-        if (b == 14) return byte("e");
-        if (b == 15) return byte("f");
+        return string(str);
     }
 
     event TokenClaimed(bytes32 sin, bytes32 sinHash, address player);
-    event String(string s);
-    event Byte(bytes1);
 }

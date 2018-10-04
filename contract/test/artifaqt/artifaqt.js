@@ -104,7 +104,7 @@ contract('Artifaqt', (accounts) => {
 
         assert.strictEqual(
             await artifaqt.hashToString.call(hash),
-            "0x48bed44d1bcd124a28c27f343a817e5f5243190d3c52bf347daf876de1dbbf77)",
+            "0x48bed44d1bcd124a28c27f343a817e5f5243190d3c52bf347daf876de1dbbf77",
         );
     });
 });

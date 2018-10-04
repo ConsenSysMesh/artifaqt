@@ -16,37 +16,35 @@ contract Artifaqt is EIP721 {
     }
 
     function recoverAddr(
-        bytes32 _msgHash,
+        bytes32 _signature,
         uint8 _v,
         bytes32 _r,
         bytes32 _s
         ) public pure returns (address)
     {
-        return ecrecover(_msgHash, _v, _r, _s);
+        return ecrecover(_signature, _v, _r, _s);
     }
 
     function isSigned(
         address _addr,
-        bytes32 _msgHash,
+        bytes32 _signature,
         uint8 _v,
         bytes32 _r,
         bytes32 _s) public pure returns (bool)
     {
-        return ecrecover(_msgHash, _v, _r, _s) == _addr;
+        return ecrecover(_signature, _v, _r, _s) == _addr;
     }
 
     function claimToken(
-        bytes32 _msgHash, 
+        bytes32 _signature, 
         uint8 _v, 
         bytes32 _r, 
         bytes32 _s, 
-        bytes32 _sin) public returns (bool, bytes32, bytes32) 
+        bytes32 _sin) public
     {
         bytes32 lust = 0xfc3fe4f31dfabb1d4f80738b0c84c940483c755284943811599526cb3d4bd237;
 
-        emit Hash(keccak256(abi.encodePacked(lust, msg.sender)));
-
-        require(isSigned(msg.sender, _msgHash, _v, _r, _s));
+        require(isSigned(msg.sender, _signature, _v, _r, _s));
         require(_sin == keccak256(abi.encodePacked(lust, msg.sender)));
 
         addToken(msg.sender, totalSupply());
@@ -55,5 +53,4 @@ contract Artifaqt is EIP721 {
     }
 
     event TokenClaimed(bytes32 sin, bytes32 sinHash, address player);
-    event Hash(bytes32 hash);
 }

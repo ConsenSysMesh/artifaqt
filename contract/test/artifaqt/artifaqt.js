@@ -79,14 +79,18 @@ contract('Artifaqt', (accounts) => {
     })
 
     it('claim token: Limbo', async () => {
-        const sin = web3.sha3(sins['limbo']); // Limbo sin
-        const sinHash = web3.sha3(sin, {encoding: 'hex'});
+        const sin = web3.sha3(sins['limbo'])
+        const sinPayload = sin + player.substr(2); // Limbo sin
+        const sinHash = web3.sha3(sinPayload, {encoding: 'hex'});
         const {
             prefixedMsgHash,
             vDecimal,
             r,
             s,
         } = signMessage(sinHash, player);
+
+        console.log(`sinHash = ${sinHash}`);
+        console.log(`player = ${player}`);
 
         await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sinHash, { from: player });
 

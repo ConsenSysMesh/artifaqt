@@ -1,4 +1,4 @@
-const { signMessage, signHexMessage } = require('../helpers/signMessage');
+const { signMessage } = require('../helpers/signMessage');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -32,13 +32,17 @@ const sins = [
     // fraud
     'Those who used lies and deception for personal gain.',
     // treachery
-    'Those who have betrayed their loved ones.'
+    'Those who have betrayed their loved ones.',
 ];
 
 contract('Artifaqt', (accounts) => {
     beforeEach(async () => {
         owner = accounts[0];
         artifaqt = await ArtifaqtContract.new({ from: owner });
+
+        const receipt = await web3.eth.getTransactionReceipt(artifaqt.transactionHash);
+
+        assert.isBelow(receipt.gasUsed, 3400000);
 
         player = accounts[1];
         hacker = accounts[9];
@@ -88,18 +92,18 @@ contract('Artifaqt', (accounts) => {
     });
 
     it('temp: hex to string', async () => {
-        const hash = web3.sha3("abcd");
+        const hash = web3.sha3('abcd');
 
         await artifaqt.hashToString(hash);
 
         assert.strictEqual(
             await artifaqt.hashToString.call(hash),
-            "0x48bed44d1bcd124a28c27f343a817e5f5243190d3c52bf347daf876de1dbbf77",
+            '0x48bed44d1bcd124a28c27f343a817e5f5243190d3c52bf347daf876de1dbbf77',
         );
-    });    
+    });
 
     it('claim token: claim each token', async () => {
-        for (let sinIndex = 0; sinIndex < 9; sinIndex++) {
+        for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
             const sin = web3.sha3(sins[sinIndex]);
             const sinPayload = sin + player.substr(2);
             const sinHash = web3.sha3(sinPayload, { encoding: 'hex' });
@@ -109,14 +113,21 @@ contract('Artifaqt', (accounts) => {
                 r,
                 s,
             } = signMessage(sinHash, player);
-    
-            await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sinHash, sinIndex, { from: player });
-    
+
+            await artifaqt.claimToken(
+                prefixedMsgHash,
+                vDecimal,
+                r,
+                s,
+                sinHash,
+                sinIndex,
+                { from: player },
+            );
+
             assert.equal(
                 (await artifaqt.balanceOf.call(player)).toNumber(),
-                sinIndex+1,
+                sinIndex + 1,
             );
         }
     });
-
 });

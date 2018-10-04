@@ -6,8 +6,29 @@ import "./../eip721/EIP721.sol";
 contract Artifaqt is EIP721 {
     address public owner;
 
+    bytes32[] private sins;
+
     constructor() public {
-        // Set owner / admin
+        // Limbo
+        sins.push(keccak256("Those who were never baptised.")); 
+        // Lust
+        sins.push(keccak256("Those who gave into pleasure.")); 
+        // Gluttony
+        sins.push(keccak256("Those who indulged in excess.")); 
+        // Avarice
+        sins.push(keccak256("Those who hoard and spend wastefully.")); 
+        // Wrath
+        sins.push(keccak256("Those consumed by anger and hatred.")); 
+        // Heresy
+        sins.push(keccak256("Those who worshipped false idols.")); 
+        // Violence
+        sins.push(keccak256("Those violent against others, one’s self, and God.")); 
+        // Fraud
+        sins.push(keccak256("Those who used lies and deception for personal gain.")); 
+        // Treachery
+        sins.push(keccak256("Those who have betrayed their loved ones.")); 
+
+        // Set owner
         owner = msg.sender;
 
         // Default name and symbol
@@ -40,22 +61,23 @@ contract Artifaqt is EIP721 {
         uint8 _v, 
         bytes32 _r, 
         bytes32 _s, 
-        bytes32 _sin) public
+        bytes32 _sin,
+        uint256 _sinIndex) public
     {
-        bytes32 lust = 0xfc3fe4f31dfabb1d4f80738b0c84c940483c755284943811599526cb3d4bd237;
+        bytes32 sinHash = sins[_sinIndex];
 
         // Make sure this message was signed by the sender
         require(isSigned(msg.sender, _message, _v, _r, _s));
 
-        // Make sure lust is the sin
-        require(_sin == keccak256(abi.encodePacked(lust, msg.sender)));
+        // Make sure it's the correct sin
+        require(_sin == keccak256(abi.encodePacked(sinHash, msg.sender)));
 
         // Make sure the message is 
         require(_message == keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n66", hashToString(_sin))));
 
         addToken(msg.sender, totalSupply());
 
-        emit TokenClaimed(_sin, keccak256(abi.encodePacked(lust)), msg.sender);
+        emit TokenClaimed(_sin, _sinIndex, keccak256(abi.encodePacked(sinHash)), msg.sender);
     }
 
     function hashToString(bytes32 _hash) public pure returns(string) {
@@ -70,5 +92,5 @@ contract Artifaqt is EIP721 {
         return string(str);
     }
 
-    event TokenClaimed(bytes32 sin, bytes32 sinHash, address player);
+    event TokenClaimed(bytes32 sin, uint256 sinIndex, bytes32 sinHash, address player);
 }

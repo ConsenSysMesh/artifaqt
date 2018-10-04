@@ -14,17 +14,26 @@ let hacker;
 // Contract instance
 let artifaqt;
 
-const sins = {
-    limbo: 'Those who were never baptised.',
-    lust: 'Those who gave into pleasure.',
-    gluttony: 'Those who indulged in excess.',
-    avarice: 'Those who hoard and spend wastefully.',
-    wrath: 'Those consumed by anger and hatred.',
-    heresy: 'Those who worshipped false idols.',
-    violence: 'Those violent against others, one’s self, and God.',
-    fraud: 'Those who used lies and deception for personal gain.',
-    treachery: 'Those who have betrayed their loved ones.',
-};
+const sins = [
+    // limbo
+    'Those who were never baptised.',
+    // lust
+    'Those who gave into pleasure.',
+    // gluttony
+    'Those who indulged in excess.',
+    // avarice
+    'Those who hoard and spend wastefully.',
+    // wrath
+    'Those consumed by anger and hatred.',
+    // heresy
+    'Those who worshipped false idols.',
+    // violence
+    'Those violent against others, one’s self, and God.',
+    // fraud
+    'Those who used lies and deception for personal gain.',
+    // treachery
+    'Those who have betrayed their loved ones.'
+];
 
 contract('Artifaqt', (accounts) => {
     beforeEach(async () => {
@@ -78,25 +87,6 @@ contract('Artifaqt', (accounts) => {
         );
     });
 
-    it('claim token: Limbo', async () => {
-        const sin = web3.sha3(sins.limbo);
-        const sinPayload = sin + player.substr(2); // Limbo sin
-        const sinHash = web3.sha3(sinPayload, { encoding: 'hex' });
-        const {
-            prefixedMsgHash,
-            vDecimal,
-            r,
-            s,
-        } = signMessage(sinHash, player);
-
-        await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sinHash, { from: player });
-
-        assert.equal(
-            (await artifaqt.balanceOf.call(player)).toNumber(),
-            1,
-        );
-    });
-
     it('temp: hex to string', async () => {
         const hash = web3.sha3("abcd");
 
@@ -106,5 +96,27 @@ contract('Artifaqt', (accounts) => {
             await artifaqt.hashToString.call(hash),
             "0x48bed44d1bcd124a28c27f343a817e5f5243190d3c52bf347daf876de1dbbf77",
         );
+    });    
+
+    it('claim token: claim each token', async () => {
+        for (let sinIndex = 0; sinIndex < 9; sinIndex++) {
+            const sin = web3.sha3(sins[sinIndex]);
+            const sinPayload = sin + player.substr(2);
+            const sinHash = web3.sha3(sinPayload, { encoding: 'hex' });
+            const {
+                prefixedMsgHash,
+                vDecimal,
+                r,
+                s,
+            } = signMessage(sinHash, player);
+    
+            await artifaqt.claimToken(prefixedMsgHash, vDecimal, r, s, sinHash, sinIndex, { from: player });
+    
+            assert.equal(
+                (await artifaqt.balanceOf.call(player)).toNumber(),
+                sinIndex+1,
+            );
+        }
     });
+
 });

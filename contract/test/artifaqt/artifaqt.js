@@ -114,7 +114,7 @@ contract('Artifaqt', (accounts) => {
                 s,
             } = signMessage(sinHash, player);
 
-            await artifaqt.claimToken(
+            let c = await artifaqt.claimToken(
                 prefixedMsgHash,
                 vDecimal,
                 r,
@@ -123,6 +123,9 @@ contract('Artifaqt', (accounts) => {
                 sinIndex,
                 { from: player },
             );
+
+            // TODO: optimize gas cost
+            console.log(`gasUsed = ${c.receipt.gasUsed}`);
 
             assert.equal(
                 (await artifaqt.balanceOf.call(player)).toNumber(),

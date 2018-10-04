@@ -54,6 +54,9 @@ function claimToken(bytes32 _msgHash, uint8 _v, bytes32 _r, bytes32 _s, bytes32 
 
 In order to have a different payload for each player for each station, a unique payload needs to be constructed. I wanted to deter people from watching transactions happening on the chain and just replicating what others are doing.
 
+
+
+<!-- 
 #### Version 1
 Consider the simple, most exploitable version:
 
@@ -75,4 +78,4 @@ A better approach is to salt the signed message with the `player`'s address befo
     - one of the hidden QR codes was used
     - the hash contains the hidden `message` and the `player`'s address
 
-    
+     -->

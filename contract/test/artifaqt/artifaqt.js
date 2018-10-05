@@ -104,22 +104,22 @@ contract('Artifaqt', (accounts) => {
 
     it('claim token: claim each token', async () => {
         for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
-            const sin = web3.sha3(sins[sinIndex]);
-            const sinPayload = sin + player.substr(2);
-            const sinHash = web3.sha3(sinPayload, { encoding: 'hex' });
+            const sinHash = web3.sha3(sins[sinIndex]);
+            const sinPayload = sinHash + player.substr(2);
+            const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
             const {
                 prefixedMsgHash,
                 vDecimal,
                 r,
                 s,
-            } = signMessage(sinHash, player);
+            } = signMessage(sinPayloadHash, player);
 
             let c = await artifaqt.claimToken(
                 prefixedMsgHash,
                 vDecimal,
                 r,
                 s,
-                sinHash,
+                sinPayloadHash,
                 sinIndex,
                 { from: player },
             );

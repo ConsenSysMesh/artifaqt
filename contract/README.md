@@ -43,12 +43,8 @@ In order to claim tokens, the `player` needs to make a call to `claimToken()`.
 The definition of `claimToken()` is
 
 ```solidity
-function claimToken(bytes32 _msgHash, uint8 _v, bytes32 _r, bytes32 _s, bytes32 _sin)
+function claimToken(bytes32 _message, uint8 _v, bytes32 _r, bytes32 _s, bytes32 _sin, uint256 _sinIndex)
 ```
-
-- `_signature` - `_sin` message signed by player.
-- `_v`, `_r`, `_s` - values from the signature; enable signature checking
-- `_sin` - payload that was signed by the player.
 
 ### Constructing the `_sin` payload
 

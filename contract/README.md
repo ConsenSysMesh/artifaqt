@@ -59,7 +59,7 @@ These are the basic steps, but also refer to the [proof of concept](proof-of-con
 #### 1. Obtain the message.
 
 Each station provides a QR Code after a confession was made. The QR Code is a JSON that looks like this
-```json
+```javascript
 {
     sin: "Those who were never baptised.",
     sinIndex: 0

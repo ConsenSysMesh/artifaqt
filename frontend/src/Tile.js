@@ -6,7 +6,7 @@ class Tile extends Component {
   willComponentUpdate() { return true; }
 
   render() {
-    const { x, y, tileNumber, move } = this.props;
+    const { x, y, tileNumber } = this.props;
     const empty = !tileNumber ? 'empty' : '';
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
@@ -35,5 +35,5 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Tile);

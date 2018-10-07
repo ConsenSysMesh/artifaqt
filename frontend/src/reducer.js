@@ -8,7 +8,7 @@ const MAX = 3 - 1;
 const reducer = (state = fromJS(initialState), action) => {
   switch(action.type) {
     case 'ATTEMPT_MOVE':
-      const cords = coodrinatesToSwitch(action.y, action.x, state.get('grid'));
+      const cords = coodrinatesToSwitch(action.y, action.x);
       const cord = cords.length ? cordWithZero(cords, state.get('grid')) : false;
 
       if (cord) {
@@ -17,7 +17,6 @@ const reducer = (state = fromJS(initialState), action) => {
         const numToSwitch = state.getIn(['grid', action.y, action.x]);
         return state.setIn(['grid', y, x], numToSwitch)
                     .setIn(['grid', action.y, action.x], 0);
-        return state;
       }
 
       return state;
@@ -32,7 +31,7 @@ export default reducer;
 
 
 
-const coodrinatesToSwitch = (y, x, grid) => {
+const coodrinatesToSwitch = (y, x) => {
   const offsets = [-1, 1];
   let cordsToCheck = []
   offsets.map(off => {

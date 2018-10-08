@@ -36,60 +36,18 @@ contract Artifaqt is EIP721 {
         symbol = "ATQ";
     }
 
-    function recoverAddr(
-        bytes32 _signature,
-        uint8 _v,
-        bytes32 _r,
-        bytes32 _s
-        ) public pure returns (address)
-    {
-        return ecrecover(_signature, _v, _r, _s);
-    }
-
-    function isSigned(
-        address _addr,
-        bytes32 _signature,
-        uint8 _v,
-        bytes32 _r,
-        bytes32 _s) public pure returns (bool)
-    {
-        return ecrecover(_signature, _v, _r, _s) == _addr;
-    }
-
     function claimToken(
-        bytes32 _message, 
-        uint8 _v, 
-        bytes32 _r, 
-        bytes32 _s, 
         bytes32 _sin,
         uint256 _sinIndex) public
     {
         bytes32 sinHash = sins[_sinIndex];
 
-        // Make sure this message was signed by the sender
-        require(isSigned(msg.sender, _message, _v, _r, _s));
-
         // Make sure it's the correct sin
         require(_sin == keccak256(abi.encodePacked(sinHash, msg.sender)));
-
-        // Make sure the message is 
-        require(_message == keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n66", hashToString(_sin))));
 
         addToken(msg.sender, totalSupply());
 
         emit TokenClaimed(_sin, _sinIndex, keccak256(abi.encodePacked(sinHash)), msg.sender);
-    }
-
-    function hashToString(bytes32 _hash) public pure returns(string) {
-        bytes memory alphabet = "0123456789abcdef";
-        bytes memory str = new bytes(66);
-        str[0] = "0";
-        str[1] = "x";
-        for (uint i = 0; i < 32; i++) {
-            str[2+i*2] = alphabet[uint(_hash[i] >> 4)];
-            str[3+i*2] = alphabet[uint(_hash[i] & 0x0f)];
-        }
-        return string(str);
     }
 
     event TokenClaimed(bytes32 sin, uint256 sinIndex, bytes32 sinHash, address player);

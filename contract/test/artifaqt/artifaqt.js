@@ -1,4 +1,4 @@
-const { signMessage } = require('../helpers/signMessage');
+const { assertRevert } = require('../helpers/assertRevert');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -53,72 +53,13 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(await artifaqt.symbol.call(), 'ATQ');
     });
 
-    it('signature: we can recover the address from the signature', async () => {
-        const {
-            prefixedMsgHash,
-            vDecimal,
-            r,
-            s,
-        } = signMessage('Any kind of message', player);
-
-        assert.strictEqual(
-            await artifaqt.recoverAddr.call(
-                prefixedMsgHash,
-                vDecimal,
-                r,
-                s,
-            ),
-            player,
-        );
-    });
-
-    it('signature: can verify an address signed a message', async () => {
-        const {
-            prefixedMsgHash,
-            vDecimal,
-            r,
-            s,
-        } = signMessage('Any kind of message', player);
-
-        assert.isTrue(
-            await artifaqt.isSigned.call(
-                player,
-                prefixedMsgHash,
-                vDecimal,
-                r,
-                s,
-            ),
-        );
-    });
-
-    it('temp: hex to string', async () => {
-        const hash = web3.sha3('abcd');
-
-        await artifaqt.hashToString(hash);
-
-        assert.strictEqual(
-            await artifaqt.hashToString.call(hash),
-            '0x48bed44d1bcd124a28c27f343a817e5f5243190d3c52bf347daf876de1dbbf77',
-        );
-    });
-
     it('claim token: claim each token', async () => {
         for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
             const sinHash = web3.sha3(sins[sinIndex]);
             const sinPayload = sinHash + player.substr(2);
             const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
-            const {
-                prefixedMsgHash,
-                vDecimal,
-                r,
-                s,
-            } = signMessage(sinPayloadHash, player);
 
-            let c = await artifaqt.claimToken(
-                prefixedMsgHash,
-                vDecimal,
-                r,
-                s,
+            const c = await artifaqt.claimToken(
                 sinPayloadHash,
                 sinIndex,
                 { from: player },
@@ -132,5 +73,24 @@ contract('Artifaqt', (accounts) => {
                 sinIndex + 1,
             );
         }
+    });
+
+    it('claim token: hacker cannot claim token for himself', async () => {
+        const sinIndex = 0;
+
+        const sinHash = web3.sha3(sins[sinIndex]);
+        const sinPayload = sinHash + player.substr(2);
+        const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
+
+        await assertRevert(artifaqt.claimToken(
+            sinPayloadHash,
+            sinIndex,
+            { from: hacker },
+        ));
+
+        assert.equal(
+            (await artifaqt.balanceOf.call(hacker)).toNumber(),
+            0,
+        );
     });
 });

@@ -12,22 +12,6 @@ let contractABI = [
         "constant": false,
         "inputs": [
             {
-                "name": "_message",
-                "type": "bytes32"
-            },
-            {
-                "name": "_v",
-                "type": "uint8"
-            },
-            {
-                "name": "_r",
-                "type": "bytes32"
-            },
-            {
-                "name": "_s",
-                "type": "bytes32"
-            },
-            {
                 "name": "_sin",
                 "type": "bytes32"
             },

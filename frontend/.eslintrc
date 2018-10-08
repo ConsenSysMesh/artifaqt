@@ -1,0 +1,30 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "plugins": [
+        "react"
+    ],
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "rules": {
+        "comma-dangle": 0,
+        "no-case-declarations": 0,
+        "react/prop-types": 0
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    },    
+    "settings": {
+        "react": {
+            "pragma": "React",
+            "version": "15.4.2"
+        }
+    }
+}

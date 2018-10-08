@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, compose, applyMiddleware } from 'redux';
-import { fromJS, Map } from 'immutable';
+import { createStore } from 'redux';
+import { fromJS } from 'immutable';
 // import { createLogger } from 'redux-logger';
 
 import reducer from './reducer';
@@ -17,6 +17,6 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>
-  , document.getElementById('root'),
+  , document.getElementById('root')
 );
 

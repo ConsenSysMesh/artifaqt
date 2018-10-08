@@ -8,7 +8,7 @@ class Grid extends Component {
   render() {
     return (
       <div className="grid">
-        {size.map((i, index) => size.map((j) => <Tile y={i} x={j} />))}
+        {size.map((i, index) => size.map((j) => <Tile y={i} x={j} key={index}/>))}
       </div>
     );
   }

@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class Tile extends Component {
-
-  willComponentUpdate() { return true; }
-
   render() {
     const { x, y, tileNumber } = this.props;
     const empty = !tileNumber ? 'empty' : '';

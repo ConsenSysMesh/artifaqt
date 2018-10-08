@@ -31,16 +31,21 @@ export default reducer;
 
 
 
-const coodrinatesToSwitch = (y, x) => {
+const coodrinatesToSwitch = (y, x, prevY = null, prevX = null) => {
   const offsets = [-1, 1];
   let cordsToCheck = []
+    // console.log(`check switch: ${prevY},${prevX}` )
   offsets.map(off => {
     // check same y first
-    if (shouldInclude(x, off) && shouldInclude(y, 0)) {
+    if ((shouldInclude(x, off) && shouldInclude(y, 0))
+      && !(y === prevY && (x + off) === prevX)
+    ) {
       cordsToCheck.push(`${y},${x + off}`)
     }
     // check same x first
-    if (shouldInclude(y, off) && shouldInclude(x, 0)) {
+    if ((shouldInclude(y, off) && shouldInclude(x, 0))
+      && !(x === prevX && (y + off) === prevY)
+    ) {
       cordsToCheck.push(`${y + off},${x}`)
     }
   });
@@ -66,13 +71,15 @@ const cordWithZero = (cordsArray, grid) => {
   }, '');
 }
 
+let lastY = null;
+let lastX = null;
 const mixGrid = state => {
   let currentZeroY = 1, currentZeroX = 1;
   // switch things 200 times based on location of 0
   // always assumes 0 is at 1,1 - line 68
-  for (let i = 0; i < 200; i++) {
-    // finds possible switches
-    const possibleSwitches = coodrinatesToSwitch(currentZeroY, currentZeroX, state.get('grid'));
+  for (let i = 0; i < 20; i++) {
+    // finds possible switches and makes sure it never reverses previous switch
+    const possibleSwitches = coodrinatesToSwitch(currentZeroY, currentZeroX, lastY, lastX);
     // selects a random one
     const indexSwitch = Math.floor(Math.random() * possibleSwitches.length)
     let [switchY, switchX] = possibleSwitches[indexSwitch].split(',');
@@ -80,6 +87,11 @@ const mixGrid = state => {
     // switches numbers
     state = state.setIn(['grid', currentZeroY, currentZeroX], numToSwitch)
                  .setIn(['grid', switchY, switchX], 0);
+
+    lastY = parseInt(currentZeroY);
+    lastX = parseInt(currentZeroX);
+
+    console.log(`last switch: ${lastY},${lastX}` )
 
     currentZeroY = parseInt(switchY);
     currentZeroX = parseInt(switchX);

@@ -59,14 +59,14 @@ contract('Artifaqt', (accounts) => {
             const sinPayload = sinHash + player.substr(2);
             const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
 
-            const c = await artifaqt.claimToken(
+            await artifaqt.claimToken(
                 sinPayloadHash,
                 sinIndex,
                 { from: player },
             );
 
             // TODO: optimize gas cost
-            console.log(`gasUsed = ${c.receipt.gasUsed}`);
+            // console.log(`gasUsed = ${c.receipt.gasUsed}`);
 
             assert.equal(
                 (await artifaqt.balanceOf.call(player)).toNumber(),
@@ -93,4 +93,40 @@ contract('Artifaqt', (accounts) => {
             0,
         );
     });
+
+    it('claim token: player claims token of each type', async () => {
+        for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
+            const sinHash = web3.sha3(sins[sinIndex]);
+            const sinPayload = sinHash + player.substr(2);
+            const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
+
+            const claimTokenResult = await artifaqt.claimToken(
+                sinPayloadHash,
+                sinIndex,
+                { from: player },
+            );
+
+            const tokenId = claimTokenResult.logs[0].args.tokenId.toNumber();
+
+            // Make sure the player claimed an additional token
+            assert.equal(
+                (await artifaqt.balanceOf.call(player)).toNumber(),
+                sinIndex + 1,
+            );
+
+            // Get token to test if it was generated correctly for player
+            const token = await artifaqt.getToken.call(tokenId);
+
+            // token id
+            assert.equal(token[0].toNumber(), tokenId, 'token id not as expected');
+
+            // token owner
+            assert.equal(token[1], player, 'token owner does not match player');
+
+            // token type
+            assert.equal(token[2].toNumber(), sinIndex, 'token type not as expected');
+        }
+    });
+
+    // TODO: write test for multiple users that claim tokens, test everything
 });

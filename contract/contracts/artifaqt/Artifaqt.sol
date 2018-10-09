@@ -8,6 +8,9 @@ contract Artifaqt is EIP721 {
 
     bytes32[] private sins;
 
+    // Mapping from token ID to token type
+    mapping(uint256 => uint256) internal typeOfToken;
+
     constructor() public {
         // Limbo
         sins.push(keccak256("Those who were never baptised.")); 
@@ -45,10 +48,24 @@ contract Artifaqt is EIP721 {
         // Make sure it's the correct sin
         require(_sin == keccak256(abi.encodePacked(sinHash, msg.sender)));
 
-        addToken(msg.sender, totalSupply());
+        uint256 tokenId = totalSupply();
+        addToken(msg.sender, tokenId);
 
-        emit TokenClaimed(_sin, _sinIndex, keccak256(abi.encodePacked(sinHash)), msg.sender);
+        // Save token type
+        typeOfToken[tokenId] = _sinIndex;
+
+        emit TokenClaimed(tokenId, _sinIndex, msg.sender);
     }
 
-    event TokenClaimed(bytes32 sin, uint256 sinIndex, bytes32 sinHash, address player);
+    function getToken(
+        uint256 _tokenId
+    ) public view returns (uint256, address, uint256) {
+        return (
+            allTokensIndex[_tokenId],
+            ownerOfToken[_tokenId],
+            typeOfToken[_tokenId]
+        );
+    }
+
+    event TokenClaimed(uint256 tokenId, uint256 sinType, address player);
 }

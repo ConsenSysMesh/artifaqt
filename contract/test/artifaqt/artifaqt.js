@@ -1,12 +1,14 @@
 const { assertRevert } = require('../helpers/assertRevert');
+const { createClaimTokenPayload } = require('../helpers/artifaqt');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
 // Account that deploys the contract
 let owner;
 
-// Account that plays the game nicely
+// Accounts that play the game nicely
 let player;
+let player2;
 
 // Account that tries to hack the game
 let hacker;
@@ -44,7 +46,11 @@ contract('Artifaqt', (accounts) => {
 
         assert.isBelow(receipt.gasUsed, 3400000);
 
+        // Nice players
         player = accounts[1];
+        player2 = accounts[2];
+
+        // Bad players
         hacker = accounts[9];
     });
 
@@ -55,9 +61,7 @@ contract('Artifaqt', (accounts) => {
 
     it('claim token: claim each token', async () => {
         for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
-            const sinHash = web3.sha3(sins[sinIndex]);
-            const sinPayload = sinHash + player.substr(2);
-            const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
+            const sinPayloadHash = createClaimTokenPayload(sins[sinIndex], player);
 
             await artifaqt.claimToken(
                 sinPayloadHash,
@@ -78,9 +82,8 @@ contract('Artifaqt', (accounts) => {
     it('claim token: hacker cannot claim token for himself', async () => {
         const sinIndex = 0;
 
-        const sinHash = web3.sha3(sins[sinIndex]);
-        const sinPayload = sinHash + player.substr(2);
-        const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
+        // Use a payload that a user created
+        const sinPayloadHash = createClaimTokenPayload(sins[sinIndex], player);
 
         await assertRevert(artifaqt.claimToken(
             sinPayloadHash,
@@ -96,9 +99,7 @@ contract('Artifaqt', (accounts) => {
 
     it('claim token: player claims token of each type', async () => {
         for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
-            const sinHash = web3.sha3(sins[sinIndex]);
-            const sinPayload = sinHash + player.substr(2);
-            const sinPayloadHash = web3.sha3(sinPayload, { encoding: 'hex' });
+            const sinPayloadHash = createClaimTokenPayload(sins[sinIndex], player);
 
             const claimTokenResult = await artifaqt.claimToken(
                 sinPayloadHash,
@@ -117,16 +118,74 @@ contract('Artifaqt', (accounts) => {
             // Get token to test if it was generated correctly for player
             const token = await artifaqt.getToken.call(tokenId);
 
-            // token id
+            // Token id
             assert.equal(token[0].toNumber(), tokenId, 'token id not as expected');
 
-            // token owner
+            // Token owner
             assert.equal(token[1], player, 'token owner does not match player');
 
-            // token type
+            // Token type
             assert.equal(token[2].toNumber(), sinIndex, 'token type not as expected');
         }
     });
 
-    // TODO: write test for multiple users that claim tokens, test everything
+    it('claim token: multiple players claim different tokens', async () => {
+        const claimTokenResultPlayer1 = await artifaqt.claimToken(
+            createClaimTokenPayload(sins[0], player),
+            0,
+            { from: player },
+        );
+
+        const claimTokenResultPlayer2 = await artifaqt.claimToken(
+            createClaimTokenPayload(sins[1], player2),
+            1,
+            { from: player2 },
+        );
+
+        // Token id
+        assert.notEqual(
+            claimTokenResultPlayer1.logs[0].args.tokenId,
+            claimTokenResultPlayer2.logs[0].args.tokenId,
+            'token ids must be different',
+        );
+
+        // Token type
+        assert.equal(
+            claimTokenResultPlayer1.logs[0].args.sinType.toNumber(),
+            0,
+            'token type must be 0 for player 1',
+        );
+        assert.equal(
+            claimTokenResultPlayer2.logs[0].args.sinType.toNumber(),
+            1,
+            'token type must be 1 for player 2',
+        );
+
+        // Token owner
+        assert.equal(
+            claimTokenResultPlayer1.logs[0].args.player,
+            player,
+            'owner of token must be player 1',
+        );
+        assert.equal(
+            claimTokenResultPlayer2.logs[0].args.player,
+            player2,
+            'owner of token must be player 2',
+        );
+
+        const token1 = await artifaqt.getToken.call(claimTokenResultPlayer1.logs[0].args.tokenId);
+        const token2 = await artifaqt.getToken.call(claimTokenResultPlayer2.logs[0].args.tokenId);
+
+        // Token id
+        assert.equal(token1[0].toNumber(), claimTokenResultPlayer1.logs[0].args.tokenId);
+        assert.equal(token2[0].toNumber(), claimTokenResultPlayer2.logs[0].args.tokenId);
+
+        // Token owner
+        assert.equal(token1[1], player);
+        assert.equal(token2[1], player2);
+
+        // Token type
+        assert.equal(token1[2].toNumber(), 0);
+        assert.equal(token2[2].toNumber(), 1);
+    });
 });

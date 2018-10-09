@@ -1,5 +1,6 @@
 const { assertRevert } = require('../helpers/assertRevert');
 const { createClaimTokenPayload } = require('../helpers/artifaqt');
+const { sins } = require('./config');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -16,27 +17,6 @@ let hacker;
 // Contract instance
 let artifaqt;
 
-const sins = [
-    // limbo
-    'Those who were never baptised.',
-    // lust
-    'Those who gave into pleasure.',
-    // gluttony
-    'Those who indulged in excess.',
-    // avarice
-    'Those who hoard and spend wastefully.',
-    // wrath
-    'Those consumed by anger and hatred.',
-    // heresy
-    'Those who worshipped false idols.',
-    // violence
-    'Those violent against others, one’s self, and God.',
-    // fraud
-    'Those who used lies and deception for personal gain.',
-    // treachery
-    'Those who have betrayed their loved ones.',
-];
-
 contract('Artifaqt', (accounts) => {
     beforeEach(async () => {
         owner = accounts[0];
@@ -52,11 +32,6 @@ contract('Artifaqt', (accounts) => {
 
         // Bad players
         hacker = accounts[9];
-    });
-
-    it('creation: deploy with name', async () => {
-        assert.strictEqual(await artifaqt.name.call(), 'Artifaqt');
-        assert.strictEqual(await artifaqt.symbol.call(), 'ATQ');
     });
 
     it('claim token: claim each token', async () => {
@@ -187,5 +162,24 @@ contract('Artifaqt', (accounts) => {
         // Token type
         assert.equal(token1[2].toNumber(), 0);
         assert.equal(token2[2].toNumber(), 1);
+    });
+
+    it('metadata: implements ERC-721 metadata', async () => {
+        // Contract checks
+        assert.strictEqual(await artifaqt.name.call(), 'Artifaqt', 'must implement name()');
+        assert.strictEqual(await artifaqt.symbol.call(), 'ATQ', 'must implement symbol()');
+
+        // Token checks
+        const claimToken = await artifaqt.claimToken(
+            createClaimTokenPayload(sins[0], player),
+            0,
+            { from: player },
+        );
+
+        console.log(claimToken.logs[0].args.tokenId);
+
+        const tokenURI = await artifaqt.tokenURI(claimToken.logs[0].args.tokenId);
+
+        console.log(tokenURI);
     });
 });

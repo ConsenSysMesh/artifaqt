@@ -1,3 +1,5 @@
+let metadataPrefix = "https://googoogaga.surge.sh/json/";
+
 module.exports = {
     sins: [
         // limbo
@@ -19,4 +21,15 @@ module.exports = {
         // treachery
         'Those who have betrayed their loved ones.',
     ],
+    metadataURIs: [
+        metadataPrefix + '0.json',
+        metadataPrefix + '1.json',
+        metadataPrefix + '2.json',
+        metadataPrefix + '3.json',
+        metadataPrefix + '4.json',
+        metadataPrefix + '5.json',
+        metadataPrefix + '6.json',
+        metadataPrefix + '7.json',
+        metadataPrefix + '8.json',
+    ]
 };

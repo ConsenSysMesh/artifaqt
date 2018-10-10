@@ -1,6 +1,6 @@
 const { assertRevert } = require('../helpers/assertRevert');
 const { createClaimTokenPayload } = require('../helpers/artifaqt');
-const { sins } = require('./config');
+const { sins, metadataURIs } = require('./config');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -24,7 +24,7 @@ contract('Artifaqt', (accounts) => {
 
         const receipt = await web3.eth.getTransactionReceipt(artifaqt.transactionHash);
 
-        assert.isBelow(receipt.gasUsed, 3400000);
+        assert.isBelow(receipt.gasUsed, 3600000);
 
         // Nice players
         player = accounts[1];
@@ -165,21 +165,20 @@ contract('Artifaqt', (accounts) => {
     });
 
     it('metadata: implements ERC-721 metadata', async () => {
-        // Contract checks
-        assert.strictEqual(await artifaqt.name.call(), 'Artifaqt', 'must implement name()');
-        assert.strictEqual(await artifaqt.symbol.call(), 'ATQ', 'must implement symbol()');
+        for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
+            // Claim token
+            const claimToken = await artifaqt.claimToken(
+                createClaimTokenPayload(sins[sinIndex], player),
+                sinIndex,
+                { from: player },
+            );
 
-        // Token checks
-        const claimToken = await artifaqt.claimToken(
-            createClaimTokenPayload(sins[0], player),
-            0,
-            { from: player },
-        );
-
-        console.log(claimToken.logs[0].args.tokenId);
-
-        const tokenURI = await artifaqt.tokenURI(claimToken.logs[0].args.tokenId);
-
-        console.log(tokenURI);
+            // TokenURI of claimed token
+            assert.strictEqual(
+                await artifaqt.tokenURI(claimToken.logs[0].args.tokenId),
+                metadataURIs[sinIndex],
+                'metadataURI must match',
+            ) ;
+        }
     });
 });

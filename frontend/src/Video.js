@@ -6,7 +6,7 @@ class Video extends Component {
   render() {
     return (
       <div className="background-video">
-        <video autoPlay loop muted className="video-container">
+        <video autoPlay playsInline loop muted className="video-container">
           <source src={vid} type="video/mp4" />
         </video>
       </div>

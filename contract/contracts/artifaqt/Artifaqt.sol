@@ -18,21 +18,21 @@ contract Artifaqt is EIP721 {
         // Limbo
         sins.push(keccak256("Those who were never baptised."));
         // Lust
-        sins.push(keccak256("Those who gave into pleasure.")); 
+        sins.push(keccak256("Those who gave into pleasure."));
         // Gluttony
-        sins.push(keccak256("Those who indulged in excess.")); 
+        sins.push(keccak256("Those who indulged in excess."));
         // Avarice
-        sins.push(keccak256("Those who hoard and spend wastefully.")); 
+        sins.push(keccak256("Those who hoard and spend wastefully."));
         // Wrath
-        sins.push(keccak256("Those consumed by anger and hatred.")); 
+        sins.push(keccak256("Those consumed by anger and hatred."));
         // Heresy
-        sins.push(keccak256("Those who worshipped false idols.")); 
+        sins.push(keccak256("Those who worshipped false idols."));
         // Violence
-        sins.push(keccak256("Those violent against others, one’s self, and God.")); 
+        sins.push(keccak256("Those violent against others, one’s self, and God."));
         // Fraud
-        sins.push(keccak256("Those who used lies and deception for personal gain.")); 
+        sins.push(keccak256("Those who used lies and deception for personal gain."));
         // Treachery
-        sins.push(keccak256("Those who have betrayed their loved ones.")); 
+        sins.push(keccak256("Those who have betrayed their loved ones."));
 
         // Token metadata
         tokenURILinks[0] = "https://googoogaga.surge.sh/json/0.json";
@@ -83,26 +83,6 @@ contract Artifaqt is EIP721 {
             typeOfToken[_tokenId]
         );
     }
-
-    /*
-    Do i really need this?
-    function uint2str(uint i) internal pure returns (string) {
-		if (i == 0) return "0";
-		uint j = i;
-		uint length;
-		while (j != 0){
-			length++;
-			j /= 10;
-		}
-		bytes memory bstr = new bytes(length);
-		uint k = length - 1;
-		while (i != 0){
-			bstr[k--] = byte(48 + i % 10);
-			i /= 10;
-		}
-		return string(bstr);
-	}
-    */
 
     event TokenClaimed(uint256 tokenId, uint256 sinType, address player);
 }

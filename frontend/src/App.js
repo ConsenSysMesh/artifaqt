@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Grid from './Grid';
-import Tile from './Tile';
 import Video from './Video';
 
 class App extends Component {
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.props.mixUp()
+    }, 3000);
+  }
 
   render() {
     return (
@@ -13,7 +18,6 @@ class App extends Component {
         <Video />
         <div className="grid-container">
           <Grid />
-          <button onClick={() => this.props.mixUp()}>Mix</button>
         </div>
       </div>
     );

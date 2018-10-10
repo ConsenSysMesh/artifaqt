@@ -9,7 +9,6 @@ body {
  	box-sizing: border-box;
 }
 
-
 .App {
 	/*padding: 30px;*/
 }
@@ -91,49 +90,4 @@ button {
   /*background: url("./assets/5.jpg") no-repeat center center;*/
   background: transparent;
   background-size: contain;
-}
-
-.pos-0{
-  left: 0;
-  top: 0;
-}
-
-.pos-1{
-  left: 100px;
-  top: 0;
-}
-
-.pos-2{
-  left: 200px;
-  top: 0;
-}
-
-.pos-3{
-  left: 0;
-  top: 100px;
-}
-
-.pos-4{
-  left: 100px;
-  top: 100px;
-}
-
-.pos-5{
-  left: 200px;
-  top: 100px;
-}
-
-.pos-6{
-  left: 0;
-  top: 200px;
-}
-
-.pos-7{
-  left: 100px;
-  top: 200px;
-}
-
-.pos-8{
-  left: 200px;
-  top: 200px;
 }

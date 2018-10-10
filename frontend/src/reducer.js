@@ -95,11 +95,9 @@ const mixGrid = state => {
     lastY = parseInt(currentZeroY);
     lastX = parseInt(currentZeroX);
 
-    console.log(`last switch: ${lastY},${lastX}` )
-
     currentZeroY = parseInt(switchY);
     currentZeroX = parseInt(switchX);
   }
 
-  return state;
+  return state.set('canInteract', true);
 }

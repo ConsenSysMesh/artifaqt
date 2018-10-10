@@ -10,7 +10,6 @@ import initialState from './initialState';
 import './index.css';
 import App from './App';
 
-// let store = createStore(reducer, fromJS(initialState))
 let store = createStore(reducer, fromJS(initialState),
   compose(applyMiddleware(createLogger({ stateTransformer: state => Map(state).toJS() }))));
 

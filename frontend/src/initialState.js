@@ -5,6 +5,7 @@ const initialState = {
     [6, 7, 8],
   ],
   solved: false,
+  canInteract: false,
 }
 
 export default initialState;

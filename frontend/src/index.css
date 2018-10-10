@@ -24,6 +24,10 @@ body {
   overflow: hidden;
 }
 
+.video-container {
+  max-height: 100vh;
+}
+
 .background-video {
   opacity: 0.6;
 }

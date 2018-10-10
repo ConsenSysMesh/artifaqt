@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import Immutable, { fromJS } from 'immutable';
 
 import initialState from './initialState';
 
@@ -15,8 +15,12 @@ const reducer = (state = fromJS(initialState), action) => {
         const [y, x] = cord.split(',');
         // could be replaced by tileNumber if passed in to action
         const numToSwitch = state.getIn(['grid', action.y, action.x]);
-        return state.setIn(['grid', y, x], numToSwitch)
+        state = state.setIn(['grid', y, x], numToSwitch)
                     .setIn(['grid', action.y, action.x], 0);
+        return state.update('solved', () => {
+                      if (Immutable.is(state.get('grid'), fromJS(initialState.grid))) return true;
+                      return false;
+                    });
       }
 
       return state;
@@ -77,7 +81,7 @@ const mixGrid = state => {
   let currentZeroY = 1, currentZeroX = 1;
   // switch things 200 times based on location of 0
   // always assumes 0 is at 1,1 - line 68
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 100; i++) {
     // finds possible switches and makes sure it never reverses previous switch
     const possibleSwitches = coodrinatesToSwitch(currentZeroY, currentZeroX, lastY, lastX);
     // selects a random one

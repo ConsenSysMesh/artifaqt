@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 
 class Tile extends Component {
   render() {
-    const { x, y, tileNumber } = this.props;
-    const empty = !tileNumber ? 'empty' : '';
+    const { x, y, number } = this.props;
+    const empty = !number ? 'empty' : '';
+    const position = ``;
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
     return (
       <div
-        className={`tile tile-${tileNumber} ${empty}`}
+        className={`tile tile-${number} ${empty} ${position}`}
         onClick={() => this.props.attemptMove(y, x)}
         style={{ top, left }}
       >
@@ -19,9 +20,19 @@ class Tile extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  return {
-    tileNumber: state.getIn(['grid', ownProps.y, ownProps.x]),
-  }
+  return findXY(ownProps.number, state);
+}
+
+const findXY = (num, state) => {
+  let x, y;
+  state.get('grid').map((list, i) => {
+    const index = list.indexOf(num)
+    if (index > -1) {
+      x = index;
+      y = i;
+    }
+  })
+  return { x, y };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -65,14 +65,9 @@ contract Artifaqt is EIP721 {
         // Make sure the user does not have this type of token
         require(ownerHasTokenType(msg.sender, _sinIndex) == false);
 
+        // Create and add token
         uint256 tokenId = totalSupply();
-        addToken(msg.sender, tokenId);
-
-        // Save token type
-        typeOfToken[tokenId] = _sinIndex;
-
-        // Save tokenURI
-        tokenURIs[tokenId] = tokenURILinks[_sinIndex];
+        addToken(msg.sender, tokenId, _sinIndex, tokenURILinks[_sinIndex]);
 
         emit TokenClaimed(tokenId, _sinIndex, msg.sender);
     }
@@ -97,7 +92,22 @@ contract Artifaqt is EIP721 {
             }
         }
         return false;
-    }    
+    }
+
+    function addToken(
+        address _to,
+        uint256 _tokenId,
+        uint256 _tokenType,
+        string _tokenURI
+    ) internal {
+        super.addToken(_to, _tokenId);
+
+        // Save token type
+        typeOfToken[_tokenId] = _tokenType;
+
+        // Save tokenURI
+        tokenURIs[_tokenId] = _tokenURI;
+    }
 
     event TokenClaimed(uint256 tokenId, uint256 sinType, address player);
 }

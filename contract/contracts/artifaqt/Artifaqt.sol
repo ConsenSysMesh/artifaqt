@@ -4,7 +4,7 @@ import "./../eip721/EIP721.sol";
 
 
 contract Artifaqt is EIP721 {
-    address public owner;
+    address public admin;
 
     bytes32[] private sins;
 
@@ -46,7 +46,7 @@ contract Artifaqt is EIP721 {
         tokenURILinks[8] = "https://googoogaga.surge.sh/json/8.json";
 
         // Set owner
-        owner = msg.sender;
+        admin = msg.sender;
 
         // Default name and symbol
         name = "Artifaqt";
@@ -61,6 +61,9 @@ contract Artifaqt is EIP721 {
 
         // Make sure it's the correct sin
         require(_sin == keccak256(abi.encodePacked(sinHash, msg.sender)));
+
+        // Make sure the user does not have this type of token
+        require(ownerHasTokenType(msg.sender, _sinIndex) == false);
 
         uint256 tokenId = totalSupply();
         addToken(msg.sender, tokenId);
@@ -83,6 +86,18 @@ contract Artifaqt is EIP721 {
             typeOfToken[_tokenId]
         );
     }
+
+    function ownerHasTokenType(
+        address _owner,
+        uint256 _sinIndex
+    ) public view returns (bool) {
+        for (uint256 i = 0; i < ownedTokens[_owner].length; i++) {
+            if (typeOfToken[ownedTokens[_owner][i]] == _sinIndex) {
+                return true;
+            }
+        }
+        return false;
+    }    
 
     event TokenClaimed(uint256 tokenId, uint256 sinType, address player);
 }

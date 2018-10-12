@@ -18,13 +18,12 @@ let hacker;
 let artifaqt;
 
 contract('Artifaqt', (accounts) => {
+    
     beforeEach(async () => {
         owner = accounts[0];
         artifaqt = await ArtifaqtContract.new({ from: owner });
 
         const receipt = await web3.eth.getTransactionReceipt(artifaqt.transactionHash);
-
-        assert.isBelow(receipt.gasUsed, 3600000);
 
         // Nice players
         player = accounts[1];
@@ -164,6 +163,40 @@ contract('Artifaqt', (accounts) => {
         assert.equal(token2[2].toNumber(), 1);
     });
 
+    it('claim token: a player cannot claim the same token type multiple types', async () => {
+        const sinIndex = 0;
+
+        const balance = (await artifaqt.balanceOf.call(player)).toNumber();
+
+        // Player claims one token of first type
+        await artifaqt.claimToken(
+            createClaimTokenPayload(sins[sinIndex], player),
+            sinIndex,
+            {from: player},
+        );
+
+        // Player has its balance increased by 1
+        assert.strictEqual(
+            (await artifaqt.balanceOf.call(player)).toNumber(),
+            balance + 1,
+            'user has an additional token',
+        );
+
+        // Player should fail claiming the same token type
+        assertRevert(artifaqt.claimToken(
+            createClaimTokenPayload(sins[sinIndex], player),
+            sinIndex,
+            { from: player },
+        ));
+
+        // Player has the same balance 
+        assert.strictEqual(
+            (await artifaqt.balanceOf.call(player)).toNumber(),
+            balance + 1,
+            'user did not claim an additional token',
+        );
+    });
+
     it('metadata: implements ERC-721 metadata', async () => {
         for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
             // Claim token
@@ -181,4 +214,5 @@ contract('Artifaqt', (accounts) => {
             );
         }
     });
+
 });

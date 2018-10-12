@@ -178,7 +178,7 @@ contract('Artifaqt', (accounts) => {
                 await artifaqt.tokenURI(claimToken.logs[0].args.tokenId),
                 metadataURIs[sinIndex],
                 'metadataURI must match',
-            ) ;
+            );
         }
     });
 });

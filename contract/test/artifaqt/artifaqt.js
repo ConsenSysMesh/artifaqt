@@ -18,7 +18,6 @@ let hacker;
 let artifaqt;
 
 contract('Artifaqt', (accounts) => {
-    
     beforeEach(async () => {
         owner = accounts[0];
         artifaqt = await ArtifaqtContract.new({ from: owner });
@@ -172,7 +171,7 @@ contract('Artifaqt', (accounts) => {
         await artifaqt.claimToken(
             createClaimTokenPayload(sins[sinIndex], player),
             sinIndex,
-            {from: player},
+            { from: player },
         );
 
         // Player has its balance increased by 1
@@ -189,7 +188,7 @@ contract('Artifaqt', (accounts) => {
             { from: player },
         ));
 
-        // Player has the same balance 
+        // Player has the same balance
         assert.strictEqual(
             (await artifaqt.balanceOf.call(player)).toNumber(),
             balance + 1,
@@ -214,5 +213,4 @@ contract('Artifaqt', (accounts) => {
             );
         }
     });
-
 });

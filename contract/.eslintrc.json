@@ -19,6 +19,16 @@
         "web3": true
     },
     "rules": {
-        "indent": ["error", 4]
+        "indent": [
+            "error",
+            4
+        ],
+        "prefer-destructuring": [
+            "error",
+            {
+                "object": true,
+                "array": false
+            }
+        ]
     }
 }

@@ -1,7 +1,5 @@
-const Artifaqt = artifacts.require("./Artifaqt.sol");
+const Artifaqt = artifacts.require('./Artifaqt.sol');
 
-module.exports = (deployer, network, accounts) => {
-    console.log("[Network]", network);
-
+module.exports = (deployer) => {
     deployer.deploy(Artifaqt);
-}
+};

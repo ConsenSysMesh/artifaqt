@@ -31,7 +31,8 @@
         "eslint-plugin-mocha": "^5.2.0",
         "eslint-plugin-react": "^7.11.1",
         "solidity-coverage": "^0.5.11",
-        "truffle": "^4.1.14"
+        "truffle": "^4.1.14",
+        "truffle-hdwallet-provider": "0.0.6"
     },
     "repository": {
         "type": "git",

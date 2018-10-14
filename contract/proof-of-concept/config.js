@@ -4,7 +4,7 @@ let QRCodeData = {
 };
 
 // Add the contract address here
-let contractAddress = '0x73044fCFB6434292d34be4257A7fA79F9cDe388e';
+let contractAddress = '0x41F3DbFb4ce2672Ca932097476af82Aef74fF694';
 
 // This is a truncated ABI, we only need these functions for now. More will be added
 let contractABI = [

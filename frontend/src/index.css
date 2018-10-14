@@ -9,8 +9,18 @@ body {
  	box-sizing: border-box;
 }
 
-.App {
+.game {
 	/*padding: 30px;*/
+}
+
+.not-connected-visitors {
+  color: white;
+  max-width: 500px;
+  text-align: center;
+  margin: auto;
+  position: relative;
+  top: 400px;
+  font-size: 1.3em;
 }
 
 .background-video, .grid-container {

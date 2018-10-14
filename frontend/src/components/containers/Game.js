@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Grid from './Grid';
-import Video from './Video';
+import Grid from '../ui/Grid';
+import Video from '../ui/Video';
 
-class App extends Component {
+class Game extends Component {
 
   componentDidMount() {
     setTimeout(() => {
@@ -14,7 +14,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="game">
         <Video />
         <div className="grid-container">
           <Grid />
@@ -33,4 +33,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   null,
   mapDispatchToProps
-)(App);
+)(Game);

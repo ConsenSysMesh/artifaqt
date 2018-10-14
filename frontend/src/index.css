@@ -13,14 +13,20 @@ body {
 	/*padding: 30px;*/
 }
 
-.not-connected-visitors {
+.not-connected-container {
   color: white;
-  max-width: 500px;
-  text-align: center;
-  margin: auto;
-  position: relative;
-  top: 400px;
   font-size: 1.3em;
+  display: flex;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-connected-message {
+  max-width: 500px;
+  text-align: center
 }
 
 .background-video, .grid-container {

@@ -44,12 +44,14 @@ export default class Home extends Component {
       return (
         onRequiredNetwork ?
         <Game /> :
-        <p className='not-connected-visitors'>
-          Welcome darq passenger. It seems you are not using an
-          appropriate Ethereum browser (check Cipher or 
-          Metamask extension if needed), and make sure you 
-          are qonnected to the MainNet.
-        </p>
+        <div className='not-connected-container'>
+          <p className='not-connected-message'>
+            Welcome darq passenger. It seems you are not using an
+            appropriate Ethereum browser (check Cipher or 
+            Metamask extension if needed), and make sure you 
+            are qonnected to the MainNet.
+          </p>
+        </div>
       )
     }
   }

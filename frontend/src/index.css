@@ -9,7 +9,7 @@ body {
  	box-sizing: border-box;
 }
 
-.game {
+.puzzle {
 	/*padding: 30px;*/
 }
 
@@ -62,6 +62,40 @@ button {
 	margin-top: 300px;
 }
 
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 0.5em;
+}
+
+.token {
+  height: 110px;
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+}
+
+.station-tile {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+}
+
+.station-action {
+  display: flex;
+  flex-direction: column;
+}
+
+.claim-button {
+  height: 30px;
+  width: 90px;
+  margin: 5px;
+}
+
 .tile {
 	width: 100px;
 	height: 100px;
@@ -70,7 +104,7 @@ button {
 	display: inline-block;
 	background: white;
 	position: absolute;
-	transition: all 100ms linear;
+  transition: all 100ms linear;
 }
 
 .tile-1{

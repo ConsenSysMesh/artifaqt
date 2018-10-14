@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { requiredNetworkId } from '../../config';
-import Game from './Game';
+import Game from '../ui/Game';
 import { Artifaqt, web3 } from '../../web3';
 
 class Home extends Component {
@@ -70,7 +70,7 @@ class Home extends Component {
     else {
       return (
         onRequiredNetwork ?
-        <Game /> :
+        <Game tokens={this.props.tokens}/> :
         <div className='not-connected-container'>
           <p className='not-connected-message'>
             Welcome darq passenger. It seems you are not using an

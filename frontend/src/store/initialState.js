@@ -9,14 +9,14 @@ const initialState = {
   user: {
     address: undefined,
     tokens: {
-      0: false,
-      1: false,
-      2: false,
-      3: false,
-      4: false,
-      5: false,
-      6: false,
-      7: false,
+      0: undefined,
+      1: undefined,
+      2: undefined,
+      3: undefined,
+      4: undefined,
+      5: undefined,
+      6: undefined,
+      7: undefined,
     }
   }
 }

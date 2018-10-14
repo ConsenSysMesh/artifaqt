@@ -12,13 +12,40 @@ class Home extends Component {
       web3Loading: true,
       onRopsten: false
     }
+    this.fetchUserTokens = this.fetchUserTokens.bind(this);
+  }
+
+  componentDidMount() {
+    if (window.web3) {
+      window.web3.version.getNetwork((err, netId) => {
+        switch (netId) {
+          case requiredNetworkId:
+            this.setState({
+              web3Loading: false,
+              onRequiredNetwork: true
+            });
+            this.fetchUserAccounts();
+            break
+          default:
+            this.setState({
+              web3Loading: false,
+              onRequiredNetwork: false
+            });
+          }
+        });
+    } else {
+      this.setState({
+        web3Loading: false,
+        onRequiredNetwork: false
+      });
+    }
   }
 
   fetchUserAccounts() {
     web3.eth.getAccounts()
       .then(accounts => {
         const address = accounts[0];
-        console.log(address);
+        console.log(`address: ${address}`);
         this.props.updateUserAddress(address);
         this.fetchUserTokens(address);
       })
@@ -26,42 +53,16 @@ class Home extends Component {
   }
 
   fetchUserTokens(address) {
-    const { tokens } = this.props;
+    const { tokens, updateUserToken } = this.props;
     for (let i=0;i<8;i++) {
       Artifaqt.methods.ownerHasTokenType(address, i).call()
       .then(res => {
         console.log(`token ${i}: ${res}`);
         if (tokens.get(`${i}`) !== res) {
-          this.props.updateUserToken(i, res);
+          updateUserToken(i, res);
         }
       })
     }
-  }
-
-  componentDidMount() {
-      if (window.web3) {
-        window.web3.version.getNetwork((err, netId) => {
-          switch (netId) {
-            case requiredNetworkId:
-              this.setState({
-                web3Loading: false,
-                onRequiredNetwork: true
-              });
-              this.fetchUserAccounts();
-              break
-            default:
-              this.setState({
-                web3Loading: false,
-                onRequiredNetwork: false
-              });
-            }
-          });
-      } else {
-        this.setState({
-          web3Loading: false,
-          onRequiredNetwork: false
-        });
-      }
   }
 
   render() {
@@ -70,7 +71,9 @@ class Home extends Component {
     else {
       return (
         onRequiredNetwork ?
-        <Game tokens={this.props.tokens}/> :
+        <Game 
+          tokens={this.props.tokens}
+          fetchUserTokens={this.fetchUserTokens}/> :
         <div className='not-connected-container'>
           <p className='not-connected-message'>
             Welcome darq passenger. It seems you are not using an

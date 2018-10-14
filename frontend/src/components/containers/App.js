@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { requiredNetworkId } from '../../config';
 import Game from './Game';
+import { Artifaqt, web3 } from '../../web3';
 
-export default class Home extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,7 +14,31 @@ export default class Home extends Component {
     }
   }
 
-  componentDidMount () {
+  fetchUserAccounts() {
+    web3.eth.getAccounts()
+      .then(accounts => {
+        const address = accounts[0];
+        console.log(address);
+        this.props.updateUserAddress(address);
+        this.fetchUserTokens(address);
+      })
+      .catch(err => console.log(err))
+  }
+
+  fetchUserTokens(address) {
+    const { tokens } = this.props;
+    for (let i=0;i<8;i++) {
+      Artifaqt.methods.ownerHasTokenType(address, i).call()
+      .then(res => {
+        console.log(`token ${i}: ${res}`);
+        if (tokens.get(`${i}`) !== res) {
+          this.props.updateUserToken(i, res);
+        }
+      })
+    }
+  }
+
+  componentDidMount() {
       if (window.web3) {
         window.web3.version.getNetwork((err, netId) => {
           switch (netId) {
@@ -21,6 +47,7 @@ export default class Home extends Component {
                 web3Loading: false,
                 onRequiredNetwork: true
               });
+              this.fetchUserAccounts();
               break
             default:
               this.setState({
@@ -37,7 +64,7 @@ export default class Home extends Component {
       }
   }
 
-  render () {
+  render() {
     const { web3Loading, onRequiredNetwork } = this.state;
     if (web3Loading) {return null}
     else {
@@ -56,3 +83,17 @@ export default class Home extends Component {
     }
   }
 }
+
+const mapStateToProps = state => ({
+  tokens: state.getIn(['user', 'tokens']),
+});
+
+const mapDispatchToProps = dispatch => ({
+  updateUserAddress: (address) => dispatch({ type: 'UPDATE_USER_ADDRESS', address }),
+  updateUserToken: (index, value) => dispatch({ type: 'UPDATE_USER_TOKEN', index, value }),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);

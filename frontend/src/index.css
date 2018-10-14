@@ -2,20 +2,43 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background: black;
 }
 
 * {
  	box-sizing: border-box;
 }
 
-
 .App {
-	padding: 30px;
+	/*padding: 30px;*/
+}
+
+.background-video, .grid-container {
+  display: flex;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  overflow: hidden;
+}
+
+.video-container {
+  max-height: 100vh;
+}
+
+.background-video {
+  opacity: 0.6;
+}
+
+.grid-container {
+  position: relative;
 }
 
 .grid {
-	width: 300px;
-	background: black;
+  width: 300px;
+	height: 300px;
 	position: relative;
 }
 
@@ -31,11 +54,7 @@ button {
 	display: inline-block;
 	background: white;
 	position: absolute;
-	transition: all 100ms ease-in-out;
-}
-
-.tile.empty {
-	background: black;
+	transition: all 100ms linear;
 }
 
 .tile-1{
@@ -51,22 +70,28 @@ button {
   background-size: contain;
 }
 .tile-4{
-  background: url("./assets/4.png") no-repeat center center;
+  background: url("./assets/4.jpg") no-repeat center center;
   background-size: contain;
 }
 .tile-5{
-  background: url("./assets/5.jpg") no-repeat center center;
-  background-size: contain;
-}
-.tile-6{
   background: url("./assets/6.jpg") no-repeat center center;
   background-size: contain;
 }
-.tile-7{
+.tile-6{
   background: url("./assets/7.jpg") no-repeat center center;
   background-size: contain;
 }
-.tile-8{
+.tile-7{
   background: url("./assets/8.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-8{
+  background: url("./assets/9.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-0{
+  /* TODO: add back when puzzle is solved; */
+  /*background: url("./assets/5.jpg") no-repeat center center;*/
+  background: transparent;
   background-size: contain;
 }

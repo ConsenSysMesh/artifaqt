@@ -2,15 +2,22 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Grid from './Grid';
+import Video from './Video';
 
 class App extends Component {
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.props.mixUp()
+    }, 3000);
+  }
 
   render() {
     return (
       <div className="App">
-        <Grid size={3} />
-        <div>
-          <button onClick={() => this.props.mixUp()}>Mix</button>
+        <Video />
+        <div className="grid-container">
+          <Grid />
         </div>
       </div>
     );

@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 
 class Tile extends Component {
 
-  willComponentUpdate() { return true; }
+  moveTile(y, x) {
+    if (this.props.canInteract) this.props.attemptMove(y, x);
+  }
 
   render() {
-    const { x, y, tileNumber } = this.props;
-    const empty = !tileNumber ? 'empty' : '';
+    const { x, y, number } = this.props;
+    const position = ``;
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
     return (
       <div
-        className={`tile tile-${tileNumber} ${empty}`}
-        onClick={() => this.props.attemptMove(y, x)}
+        className={`tile tile-${number} ${position}`}
+        onClick={() => this.moveTile(y, x)}
         style={{ top, left }}
       >
       </div>
@@ -22,9 +24,19 @@ class Tile extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
+  let x, y;
+  state.get('grid').map((list, i) => {
+    const index = list.indexOf(ownProps.number)
+    if (index > -1) {
+      x = index;
+      y = i;
+    }
+  })
   return {
-    tileNumber: state.getIn(['grid', ownProps.y, ownProps.x]),
-  }
+    x,
+    y,
+    canInteract: state.get('canInteract')
+  };
 }
 
 function mapDispatchToProps(dispatch) {

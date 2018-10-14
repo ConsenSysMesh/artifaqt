@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 
 import Tile from './Tile';
 
-const size = [0,1,2]
+const size = Array.apply(null, Array(9))
 
 class Grid extends Component {
   render() {
     return (
       <div className="grid">
-        {size.map((i, index) => size.map((j) => <Tile y={i} x={j} key={index}/>))}
+        {size.map((n, i) => <Tile key={i} number={i}/>)}
       </div>
     );
   }

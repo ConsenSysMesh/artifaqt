@@ -4,18 +4,17 @@ import { connect } from 'react-redux';
 class Tile extends Component {
 
   moveTile(y, x) {
-    if(this.props.canInteract) this.props.attemptMove(y, x);
+    if (this.props.canInteract) this.props.attemptMove(y, x);
   }
 
   render() {
     const { x, y, number } = this.props;
-    const empty = !number ? 'empty' : '';
     const position = ``;
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
     return (
       <div
-        className={`tile tile-${number} ${empty} ${position}`}
+        className={`tile tile-${number} ${position}`}
         onClick={() => this.moveTile(y, x)}
         style={{ top, left }}
       >

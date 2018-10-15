@@ -20,12 +20,12 @@ class Station extends Component {
       sinPayloadHash,
       sinIndex,
     ).send({ from: address })
-        .on('transactionHash', function (hash) { 
-            console.log(`hash = ${hash}`);
-        }).on('confirmation', function (confirmationNumber) { // would prefer on receipt but it's a bit buggy on ganache...
-            console.log(`confirmationNumber = ${confirmationNumber}`);
-            fetchUserTokens(address);
-        }).on('error', console.error);
+        .on('transactionHash',  hash => console.log(`hash = ${hash}`))
+        .on('receipt', receipt => {
+          console.log(receipt)
+          fetchUserTokens(address);
+        })
+        .on('error', err => console.error(err));
   }
 
   render() {

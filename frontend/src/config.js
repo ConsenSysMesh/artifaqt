@@ -6,14 +6,14 @@ export const activateLogger = true;
 /**
  * Contract
  */
-export const contractAddress = '0x3435a6180fbb1baec87bdc49915282bfbc328c70'; //Ganache
-// export const contractAddress = '0x93D1Ad1b55a95D603A3074C4d81583491E1C7c60'; //Ropsten
+// export const contractAddress = '0x3435a6180fbb1baec87bdc49915282bfbc328c70'; //Ganache
+export const contractAddress = '0x25bfc3939528218a362918c7974a932a2a9b9537'; //Ropsten
 
 /**
  * Ethereum network
  */
-// export const requiredNetworkId = '3'; //Ropsten
-export const requiredNetworkId = '42'; //Ganache
+export const requiredNetworkId = '3'; //Ropsten
+// export const requiredNetworkId = '42'; //Ganache
 
 /**
  * Token names

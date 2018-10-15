@@ -15,11 +15,27 @@ class App extends Component {
     }
   }
 
+  claimToken() {
+    if (window.web3 !== undefined) {
+      window.web3.currentProvider
+        .scanQRCode()
+        .then(data => {
+          console.log('QR Scanned:', data)
+          this.props.claimToken(data)
+        })
+        .catch(err => {
+          console.log('Error:', err)
+        })
+    } else {
+      this.props.claimToken()
+    }
+  }
+
   render() {
     return (
       <div className="App">
         <Intro
-          claimToken={() => this.props.claimToken()}
+          claimToken={() => this.claimToken()}
           readyToPlay={this.props.readyToPlay}
         />
         <Video readyToPlay={this.props.readyToPlay} />

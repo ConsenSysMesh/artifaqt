@@ -6,6 +6,8 @@ const initialState = {
   ],
   solved: false,
   canInteract: false,
+  web3: {},
+  tokenIndexes: [],
 }
 
 export default initialState;

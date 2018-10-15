@@ -26,6 +26,8 @@ const reducer = (state = fromJS(initialState), action) => {
       return state;
     case 'MIX':
       return mixGrid(state);
+    case 'ADD_TOKEN':
+      return state.update('tokenIndexes', arr => arr.push(arr.size + 1));
     default :
       return state;
   }

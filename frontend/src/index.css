@@ -1,39 +1,68 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Lora', serif;
   background: black;
+  color: white;
 }
 
 * {
  	box-sizing: border-box;
 }
 
-.App {
-	/*padding: 30px;*/
+h3 {
+  margin-bottom: 0;
 }
 
-.background-video, .grid-container {
+ol {
+  margin-top: 5px;
+  padding-left: 0;
+}
+
+li {
+  list-style: none;
+  font-style: italic;
+}
+
+.App {
+	top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: fixed;
+}
+
+.background-video, .grid-container, .introductory-container {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: absolute;
   display: flex;
-  height: 100vh;
-  max-height: 100vh;
-  width: 100%;
   align-items: center;
   justify-content: center;
-  position: absolute;
   overflow: hidden;
+  z-index: -1;
 }
 
-.video-container {
-  max-height: 100vh;
+.introductory-container {
+  text-align: center;
+  z-index: 1;
+  text-shadow: 0 0 5px black;
+  transition: all 1.5s ease-in;
+}
+
+.introductory-container.animate-out {
+  transform: rotate(3600deg) scale(0);
+}
+
+.background-video.hidden {
+  opacity: 0;
 }
 
 .background-video {
-  opacity: 0.6;
-}
-
-.grid-container {
-  position: relative;
+  z-index: -1;
+  transition: opacity 3s linear;
 }
 
 .grid {
@@ -43,18 +72,76 @@ body {
 }
 
 button {
-	margin-top: 300px;
+	border: 3px solid white;
+  padding: 10px 16px;
+  background: black;
+  color: white;
+  font-family: 'Lora', serif;
+  outline: none;
+  box-shadow: none;
+  font-size: 32px;
+  transition: all 200ms linear;
 }
 
+button:hover {
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+h3 {
+  margin-bottom: 0px;
+}
+
+
+
+/* -------------- TILE -------------- */
 .tile {
 	width: 100px;
 	height: 100px;
-	padding: 40px 10px;
 	text-align: center;
 	display: inline-block;
 	background: white;
 	position: absolute;
 	transition: all 100ms linear;
+}
+
+.tile.initial-animate {
+  transition: all 1s linear;
+}
+
+.tile.not-visible {
+  background: transparent;
+}
+
+.tile.not-visible::after {
+  box-shadow: none;
+}
+
+.tile::after, .tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.tile:not(.initial-animate)::after {
+  box-shadow: 0 0 23px gold;
+}
+
+.tile-0::after {
+  display: none;
+}
+
+.tile.display-placeholder::before {
+  opacity: 0.3;
+}
+
+.tile::before {
+  opacity: 0;
 }
 
 .tile-1{
@@ -93,5 +180,43 @@ button {
   /* TODO: add back when puzzle is solved; */
   /*background: url("./assets/5.jpg") no-repeat center center;*/
   background: transparent;
+  background-size: contain;
+}
+
+.tile-1::before{
+  background: url("./assets/1.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-2::before{
+  background: url("./assets/2.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-3::before{
+  background: url("./assets/3.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-4::before{
+  background: url("./assets/4.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-5::before{
+  background: url("./assets/6.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-6::before{
+  background: url("./assets/7.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-7::before{
+  background: url("./assets/8.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-8::before{
+  background: url("./assets/9.jpg") no-repeat center center;
+  background-size: contain;
+}
+.tile-0::before{
+  /* TODO: add back when puzzle is solved; */
+  background: url("./assets/5.jpg") no-repeat center center;
   background-size: contain;
 }

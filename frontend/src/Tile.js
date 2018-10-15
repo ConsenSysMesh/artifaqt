@@ -2,19 +2,34 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class Tile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { initalAnimate: true };
+  }
+
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.readyToPlay && this.props.readyToPlay) {
+      setTimeout(() => {
+        this.setState({ initalAnimate: false })
+      }, 3000)
+    }
+  }
 
   moveTile(y, x) {
     if (this.props.canInteract) this.props.attemptMove(y, x);
   }
 
   render() {
-    const { x, y, number } = this.props;
-    const position = ``;
+    const { x, y, number, hasToken, readyToPlay } = this.props;
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
+    const isVisible = hasToken ? '' : 'not-visible';
+    const displayPlaceholder = readyToPlay ? '' : 'display-placeholder';
+    const initalAnimate = !this.state.initalAnimate ? '' : 'initial-animate';
     return (
       <div
-        className={`tile tile-${number} ${position}`}
+        className={`tile tile-${number} ${isVisible} ${displayPlaceholder} ${initalAnimate}`}
         onClick={() => this.moveTile(y, x)}
         style={{ top, left }}
       >
@@ -35,7 +50,9 @@ function mapStateToProps(state, ownProps) {
   return {
     x,
     y,
-    canInteract: state.get('canInteract')
+    canInteract: state.get('canInteract'),
+    hasToken: state.get('tokenIndexes').indexOf(ownProps.number) > -1,
+    readyToPlay: state.get('tokenIndexes').size === 8,
   };
 }
 

@@ -8,9 +8,6 @@ contract Artifaqt is EIP721 {
 
     bytes32[] private sins;
 
-    // TokenURI metadata
-    string[9] private tokenURILinks;
-
     // Mapping from token ID to token type
     mapping(uint256 => uint256) internal typeOfToken;
 
@@ -34,17 +31,6 @@ contract Artifaqt is EIP721 {
         // Treachery
         sins.push(keccak256("Those who have betrayed their loved ones."));
 
-        // Token metadata
-        tokenURILinks[0] = "https://googoogaga.surge.sh/json/0.json";
-        tokenURILinks[1] = "https://googoogaga.surge.sh/json/1.json";
-        tokenURILinks[2] = "https://googoogaga.surge.sh/json/2.json";
-        tokenURILinks[3] = "https://googoogaga.surge.sh/json/3.json";
-        tokenURILinks[4] = "https://googoogaga.surge.sh/json/4.json";
-        tokenURILinks[5] = "https://googoogaga.surge.sh/json/5.json";
-        tokenURILinks[6] = "https://googoogaga.surge.sh/json/6.json";
-        tokenURILinks[7] = "https://googoogaga.surge.sh/json/7.json";
-        tokenURILinks[8] = "https://googoogaga.surge.sh/json/8.json";
-
         // Set owner
         admin = msg.sender;
 
@@ -67,7 +53,7 @@ contract Artifaqt is EIP721 {
 
         // Create and add token
         uint256 tokenId = totalSupply();
-        addToken(msg.sender, tokenId, _sinIndex, tokenURILinks[_sinIndex]);
+        addToken(msg.sender, tokenId, _sinIndex);
 
         emit TokenClaimed(tokenId, _sinIndex, msg.sender);
     }
@@ -97,16 +83,12 @@ contract Artifaqt is EIP721 {
     function addToken(
         address _to,
         uint256 _tokenId,
-        uint256 _tokenType,
-        string _tokenURI
+        uint256 _tokenType
     ) internal {
         super.addToken(_to, _tokenId);
 
         // Save token type
         typeOfToken[_tokenId] = _tokenType;
-
-        // Save tokenURI
-        tokenURIs[_tokenId] = _tokenURI;
     }
 
     function mintToken(

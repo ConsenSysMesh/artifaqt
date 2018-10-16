@@ -29,6 +29,7 @@
                 "object": true,
                 "array": false
             }
-        ]
+        ],
+        "no-await-in-loop": "off"
     }
 }

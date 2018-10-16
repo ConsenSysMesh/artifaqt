@@ -1,6 +1,6 @@
 const { assertRevert } = require('../helpers/assertRevert');
 const { createClaimTokenPayload } = require('../helpers/artifaqt');
-const { sins, metadataURIs } = require('./config');
+const { sins } = require('./config');
 
 const ArtifaqtContract = artifacts.require('Artifaqt');
 
@@ -194,24 +194,6 @@ contract('Artifaqt', (accounts) => {
             balance + 1,
             'user did not claim an additional token',
         );
-    });
-
-    it('metadata: implements ERC-721 metadata', async () => {
-        for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
-            // Claim token
-            const claimToken = await artifaqt.claimToken(
-                createClaimTokenPayload(sins[sinIndex], player),
-                sinIndex,
-                { from: player },
-            );
-
-            // TokenURI of claimed token
-            assert.strictEqual(
-                await artifaqt.tokenURI(claimToken.logs[0].args.tokenId),
-                metadataURIs[sinIndex],
-                'metadataURI must match',
-            );
-        }
     });
 
     it('admin: mint token for player', async () => {

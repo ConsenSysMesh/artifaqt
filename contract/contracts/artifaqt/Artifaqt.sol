@@ -80,6 +80,17 @@ contract Artifaqt is EIP721 {
         return false;
     }
 
+    function mintToken(
+        address _to, 
+        uint256 _sinIndex
+    ) public onlyOwner {
+        // Create and add token
+        uint256 tokenId = totalSupply();
+        addToken(_to, tokenId, _sinIndex);
+
+        emit TokenClaimed(tokenId, _sinIndex, msg.sender);
+    }
+
     function addToken(
         address _to,
         uint256 _tokenId,
@@ -89,17 +100,6 @@ contract Artifaqt is EIP721 {
 
         // Save token type
         typeOfToken[_tokenId] = _tokenType;
-    }
-
-    function mintToken(
-        address _to, 
-        uint256 _sinIndex
-    ) public onlyOwner {
-        // Create and add token
-        uint256 tokenId = totalSupply();
-        addToken(_to, tokenId, _sinIndex, tokenURILinks[_sinIndex]);
-
-        emit TokenClaimed(tokenId, _sinIndex, msg.sender);
     }
 
     event TokenClaimed(uint256 tokenId, uint256 sinType, address player);

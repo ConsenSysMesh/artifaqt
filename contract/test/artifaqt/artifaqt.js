@@ -213,4 +213,52 @@ contract('Artifaqt', (accounts) => {
             );
         }
     });
+
+    it('admin: mint token for player', async () => {
+        // Initial player token count
+        const playerTokens = (await artifaqt.balanceOf.call(player)).toNumber();
+
+        // Mint token 1 for player
+        const token1 = await artifaqt.mintToken(
+            player,
+            0,
+            { from: owner },
+        );
+
+        // Mint token 2 for player
+        const token2 = await artifaqt.mintToken(
+            player,
+            1,
+            { from: owner },
+        );
+
+        // Player should have 2 more tokens
+        assert.equal(
+            playerTokens + 2,
+            (await artifaqt.balanceOf.call(player)).toNumber(),
+            'admin shound mint 2 more tokens for player',
+        );
+
+        // Get token data
+        const token1Data = await artifaqt.getToken.call(token1.logs[0].args.tokenId.toNumber());
+        const token2Data = await artifaqt.getToken.call(token2.logs[0].args.tokenId.toNumber());
+
+        // Check token 1
+        assert.equal(
+            token1Data[0].toNumber(),
+            token1.logs[0].args.tokenId.toNumber(),
+            'token 1 id not as expected',
+        );
+        assert.equal(token1Data[1], player, 'token 1 owner does not match player');
+        assert.equal(token1Data[2], 0, 'token 1 type not as expected');
+
+        // Check token 2
+        assert.equal(
+            token2Data[0].toNumber(),
+            token2.logs[0].args.tokenId.toNumber(),
+            'token 2 id not as expected',
+        );
+        assert.equal(token2Data[1], player, 'token 2 owner does not match player');
+        assert.equal(token2Data[2], 1, 'token 2 type not as expected');
+    });
 });

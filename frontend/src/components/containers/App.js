@@ -5,7 +5,8 @@ import Grid from '../ui/Grid';
 import Video from '../ui/Video';
 import Intro from '../ui/Intro';
 import { requiredNetworkId } from '../../config';
-import { Artifaqt, web3 } from '../../web3';
+import { Artifaqt, web3, claimToken } from '../../web3';
+import allTokensReducer from '../../utils';
 
 class App extends Component {
 
@@ -16,6 +17,7 @@ class App extends Component {
       onRopsten: false
     }
     this.fetchUserTokens = this.fetchUserTokens.bind(this);
+    this.fetchUserAccounts = this.fetchUserAccounts.bind(this);
   }
 
   componentDidMount() {
@@ -55,10 +57,9 @@ class App extends Component {
   claimToken() {
     if (window.web3 !== undefined) {
       window.web3.currentProvider
-        .scanQRCode()
+        .scanQRCode(/(.+$)/)
         .then(data => {
-          console.log('QR Scanned:', data)
-          this.props.claimToken(data)
+          claimToken(JSON.parse(data), this.props.address, this.fetchUserAccounts)
         })
         .catch(err => {
           console.log('Error:', err)
@@ -81,8 +82,8 @@ class App extends Component {
 
   fetchUserTokens(address) {
     const { tokens, updateUserToken } = this.props;
-    for (let i=0;i<8;i++) {
-      Artifaqt.methods.ownerHasTokenType(address, i).call()
+    for (let i=1;i<9;i++) {
+      Artifaqt.methods.ownerHasTokenType(address, i - 1).call()
       .then(res => {
         console.log(`token ${i}: ${res}`);
         if (tokens.get(`${i}`) !== res) {
@@ -93,13 +94,14 @@ class App extends Component {
   }
 
   render() {
+    const { readyToPlay } = this.props;
     return (
       <div className="App">
         <Intro
           claimToken={() => this.claimToken()}
-          readyToPlay={this.props.readyToPlay}
+          readyToPlay={readyToPlay}
         />
-        <Video readyToPlay={this.props.readyToPlay} />
+        <Video readyToPlay={readyToPlay} />
         <div className="grid-container">
           <Grid />
         </div>
@@ -108,21 +110,17 @@ class App extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  return {
-    readyToPlay: state.get('tokenIndexes').size === 8,
+const mapStateToProps = (state, ownProps) => ({
+    readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),
+    address: state.getIn(['user', 'address']),
     tokens: state.getIn(['user', 'tokens']),
-  };
-}
+});
 
-function mapDispatchToProps(dispatch) {
-  return {
+const mapDispatchToProps = (dispatch) => ({
     mixUp: () => dispatch({ type: 'MIX' }),
-    claimToken: () => dispatch({ type: 'ADD_TOKEN' }),
     updateUserAddress: (address) => dispatch({ type: 'UPDATE_USER_ADDRESS', address }),
     updateUserToken: (index, value) => dispatch({ type: 'UPDATE_USER_TOKEN', index, value }),
-  };
-}
+});
 
 export default connect(
   mapStateToProps,

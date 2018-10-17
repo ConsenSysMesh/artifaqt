@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import allTokensReducer from '../../utils';
+
 class Tile extends Component {
   constructor(props) {
     super(props);
@@ -51,8 +53,8 @@ function mapStateToProps(state, ownProps) {
     x,
     y,
     canInteract: state.get('canInteract'),
-    hasToken: state.get('tokenIndexes').indexOf(ownProps.number) > -1,
-    readyToPlay: state.get('tokenIndexes').size === 8,
+    hasToken: state.getIn(['user', 'tokens', `${ownProps.number}`]) === true,
+    readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),
   };
 }
 

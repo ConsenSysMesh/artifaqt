@@ -7,7 +7,6 @@ const initialState = {
   solved: false,
   canInteract: false,
   web3: {},
-  tokenIndexes: [],
   user: {
     address: undefined,
     tokens: {

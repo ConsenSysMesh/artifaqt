@@ -28,6 +28,10 @@ const reducer = (state = fromJS(initialState), action) => {
       return mixGrid(state);
     case 'ADD_TOKEN':
       return state.update('tokenIndexes', arr => arr.push(arr.size + 1));
+    case 'UPDATE_USER_ADDRESS':
+      return state.setIn(['user', 'address'], action.address);
+    case 'UPDATE_USER_TOKEN':
+      return state.setIn(['user', 'tokens', `${action.index}`], action.value);
     default :
       return state;
   }

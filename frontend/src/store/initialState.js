@@ -8,6 +8,19 @@ const initialState = {
   canInteract: false,
   web3: {},
   tokenIndexes: [],
+  user: {
+    address: undefined,
+    tokens: {
+      0: undefined,
+      1: undefined,
+      2: undefined,
+      3: undefined,
+      4: undefined,
+      5: undefined,
+      6: undefined,
+      7: undefined,
+    }
+  },
 }
 
 export default initialState;

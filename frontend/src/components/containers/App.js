@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Grid from './Grid';
-import Video from './Video';
-import Intro from './Intro';
+import Grid from '../ui/Grid';
+import Video from '../ui/Video';
+import Intro from '../ui/Intro';
 
 class App extends Component {
 

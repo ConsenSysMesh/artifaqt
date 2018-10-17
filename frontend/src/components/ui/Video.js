@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import vid from './assets/flames.mp4';
+import vid from '../../assets/flames.mp4';
 
 class Video extends Component {
   render() {

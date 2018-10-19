@@ -17,7 +17,7 @@ let hacker;
 // Contract instance
 let artifaqt;
 
-contract('Artifaqt', (accounts) => {
+contract('Artifaqt', async (accounts) => {
     beforeEach(async () => {
         owner = accounts[0];
         artifaqt = await ArtifaqtContract.new({ from: owner });
@@ -52,7 +52,7 @@ contract('Artifaqt', (accounts) => {
     it('claim token: hacker cannot claim token for himself', async () => {
         const sinIndex = 0;
 
-        // Use a payload that a user created
+        // Use a payload that a player created
         const sinPayloadHash = createClaimTokenPayload(sins[sinIndex], player);
 
         await assertRevert(artifaqt.claimToken(
@@ -182,7 +182,7 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(
             (await artifaqt.balanceOf.call(player)).toNumber(),
             balance + 1,
-            'user has an additional token',
+            'player has an additional token',
         );
 
         // Player should fail claiming the same token type
@@ -196,7 +196,7 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(
             (await artifaqt.balanceOf.call(player)).toNumber(),
             balance + 1,
-            'user did not claim an additional token',
+            'player did not claim an additional token',
         );
     });
 

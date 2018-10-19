@@ -30,6 +30,7 @@
                 "array": false
             }
         ],
-        "no-await-in-loop": "off"
+        "no-await-in-loop": "off",
+        "no-underscore-dangle": ["off"]
     }
 }

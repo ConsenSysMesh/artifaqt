@@ -17,7 +17,7 @@ let hacker;
 // Contract instance
 let artifaqt;
 
-contract('Artifaqt', (accounts) => {
+contract('Artifaqt', async (accounts) => {
     beforeEach(async () => {
         owner = accounts[0];
         artifaqt = await ArtifaqtContract.new({ from: owner });
@@ -55,7 +55,7 @@ contract('Artifaqt', (accounts) => {
     it('claim token: hacker cannot claim token for himself', async () => {
         const sinIndex = 0;
 
-        // Use a payload that a user created
+        // Use a payload that a player created
         const sinPayloadHash = createClaimTokenPayload(sins[sinIndex], player);
 
         await assertRevert(artifaqt.claimToken(
@@ -178,7 +178,7 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(
             (await artifaqt.balanceOf.call(player)).toNumber(),
             balance + 1,
-            'user has an additional token',
+            'player has an additional token',
         );
 
         // Player should fail claiming the same token type
@@ -192,8 +192,42 @@ contract('Artifaqt', (accounts) => {
         assert.strictEqual(
             (await artifaqt.balanceOf.call(player)).toNumber(),
             balance + 1,
-            'user did not claim an additional token',
+            'player did not claim an additional token',
         );
+    });
+
+    it("claim token: return the player's claimed types of token", async () => {
+        // Player claims some tokens
+        const claimTokens = [0, 5, 8].sort();
+        for (let i = 0; i < claimTokens.length; i++) {
+            // Token type
+            let sin = claimTokens[i];
+
+            // Claim token
+            await artifaqt.claimToken(
+                createClaimTokenPayload(sins[sin], player),
+                sin,
+                { from: player },
+            );
+        }
+
+        // Player must have these tokens claimed
+        const playerTokens = await artifaqt.getPlayerTokenTypes.call(player);
+
+        // Check if the claimed tokens match
+        for (let i = 0; i < claimTokens.length; i++) {
+            assert.equal(
+                claimTokens[i],
+                playerTokens[i].toNumber(),
+                'token type does not match',
+            );
+        }
+        assert.equal(
+            claimTokens.length,
+            playerTokens.length,
+            'claimed tokens length mismatch player tokens length',
+        );
+
     });
 
     it('admin: mint token for player', async () => {

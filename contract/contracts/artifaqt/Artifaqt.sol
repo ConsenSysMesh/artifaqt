@@ -68,6 +68,18 @@ contract Artifaqt is EIP721 {
         );
     }
 
+    function getPlayerTokenTypes(
+        address _player
+    ) public view returns (uint256[]) {
+        uint256[] memory claimedTokens = new uint256[](ownedTokens[_player].length);
+
+        for (uint256 i = 0; i < ownedTokens[_player].length; i++) {
+            claimedTokens[i] = typeOfToken[ownedTokens[_player][i]];
+        }
+
+        return claimedTokens;
+    }
+
     function ownerHasTokenType(
         address _owner,
         uint256 _sinIndex

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Tile from './Tile';
+import Tile from '../containers/Tile';
 
 const size = Array.apply(null, Array(9))
 

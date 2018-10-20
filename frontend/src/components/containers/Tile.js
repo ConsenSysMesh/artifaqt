@@ -20,6 +20,7 @@ class Tile extends Component {
 
   moveTile(y, x) {
     if (this.props.canInteract) this.props.attemptMove(y, x);
+    else this.props.displayInfo(this.props.number);
   }
 
   render() {
@@ -60,7 +61,8 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    attemptMove: (y, x) => dispatch({ type: 'ATTEMPT_MOVE', y, x })
+    attemptMove: (y, x) => dispatch({ type: 'ATTEMPT_MOVE', y, x }),
+    displayInfo: number => dispatch({ type: 'DISPLAY_INFO', number }),
   };
 }
 

@@ -10,6 +10,11 @@ body {
  	box-sizing: border-box;
 }
 
+h1 {
+  font-style: italic;
+  letter-spacing: 5px;
+}
+
 h3 {
   margin-bottom: 0;
 }
@@ -20,7 +25,7 @@ ol {
 }
 
 li {
-  list-style: none;
+  list-style: upper-roman;
   font-style: italic;
 }
 
@@ -31,6 +36,29 @@ li {
   left: 0;
   position: fixed;
 }
+
+/*.starter-elements-container {
+
+}*/
+
+h1 {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.claim-button-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+
+
 
 .background-video, .grid-container, .introductory-container {
   top: 0;
@@ -43,17 +71,39 @@ li {
   justify-content: center;
   overflow: hidden;
   z-index: -1;
+  text-align: center;
 }
 
 .introductory-container {
   text-align: center;
-  z-index: 1;
+  z-index: 2;
   text-shadow: 0 0 5px black;
-  transition: all 1.5s ease-in;
+  /*transition: all 1.5s ease-in;*/
+  transition: transform 200ms ease-in;
+  background: rgba(0,0,0,0.8);
+  padding: 80px 30px;
+  transform: translateY(-100%);
+  overflow: scroll;
 }
 
-.introductory-container.animate-out {
+/*.introductory-container.animate-out {
   transform: rotate(3600deg) scale(0);
+}*/
+
+.introductory-container.visible {
+  transform: translateY(0%);
+}
+
+.how-top-play-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1
+}
+
+.how-top-play-container button {
+  font-size: 16px;
+  border: 3px solid black;
 }
 
 .background-video.hidden {
@@ -69,6 +119,7 @@ li {
   width: 300px;
 	height: 300px;
 	position: relative;
+  margin: 20px auto;
 }
 
 button {
@@ -93,6 +144,37 @@ h3 {
   margin-bottom: 0px;
 }
 
+/* info section */
+.title-section {
+  position: relative;
+  height: 100px;
+}
+
+.title-section .tile-container {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+
+.title-section h2 {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 5px black;
+  letter-spacing: 4px;
+  font-style: italic;
+}
+
 
 
 /* -------------- TILE -------------- */
@@ -104,6 +186,16 @@ h3 {
 	background: white;
 	position: absolute;
 	transition: all 100ms linear;
+}
+
+.tile.tile-info {
+  border: 2px solid white;
+  position: relative;
+  z-index: 0;
+}
+
+.tile.tile-info.tile-0 {
+  background: black;
 }
 
 .tile.initial-animate {

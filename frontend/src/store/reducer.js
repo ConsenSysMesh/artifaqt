@@ -4,6 +4,7 @@ import initialState from './initialState';
 
 const MIN = 0;
 const MAX = 3 - 1;
+let start = 0;
 
 const reducer = (state = fromJS(initialState), action) => {
   switch(action.type) {
@@ -27,11 +28,22 @@ const reducer = (state = fromJS(initialState), action) => {
     case 'MIX':
       return mixGrid(state);
     case 'ADD_TOKEN':
-      return state.update('tokenIndexes', arr => arr.push(arr.size + 1));
+      start += 1;
+      console.log('start', start)
+      return state.setIn(['user', 'tokens', start.toString()], true);
     case 'UPDATE_USER_ADDRESS':
       return state.setIn(['user', 'address'], action.address);
     case 'UPDATE_USER_TOKEN':
       return state.setIn(['user', 'tokens', `${action.index}`], action.value);
+    case 'DISPLAY_INFO':
+      return state.setIn(['tokenInformation', 'open'], true)
+                  .setIn(['tokenInformation', 'activeNumber'], action.number);
+    case 'TOGGLE_INFO':
+      return state.setIn(['tokenInformation', 'open'], false)
+                  .setIn(['tokenInformation', 'help'], false);
+    case 'TOGGLE_HELP':
+      return state.setIn(['tokenInformation', 'open'], true)
+                  .setIn(['tokenInformation', 'help'], true);
     default :
       return state;
   }

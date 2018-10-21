@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import Grid from '../ui/Grid';
 import Video from '../ui/Video';
 import Info from '../ui/Info';
+import Network from '../ui/Network';
 import { requiredNetworkId } from '../../config';
 import { Artifaqt, web3, claimToken } from '../../web3';
 import allTokensReducer from '../../utils';
-
 
 class App extends Component {
 
@@ -15,7 +15,8 @@ class App extends Component {
     super(props);
     this.state = {
       web3Loading: true,
-      onRopsten: false,
+      onRequiredNetwork: true, // hack - if set to false status launches the flames video
+      mobileBrowser: false,
       string: false,
     }
     this.fetchUserTokens = this.fetchUserTokens.bind(this);
@@ -24,6 +25,11 @@ class App extends Component {
 
   componentDidMount() {
     if (window.web3) {
+      if (window.web3.currentProvider && window.web3.currentProvider.scanQRCode) {
+        this.setState({
+          mobileBrowser: true,
+        });
+      }
       window.web3.version.getNetwork((err, netId) => {
         switch (netId) {
           case requiredNetworkId:
@@ -43,7 +49,8 @@ class App extends Component {
     } else {
       this.setState({
         web3Loading: false,
-        onRequiredNetwork: false
+        onRequiredNetwork: false,
+        mobileBrowser: false,
       });
     }
   }
@@ -59,7 +66,8 @@ class App extends Component {
   claimToken() {
     const { address, tokenClaimed, receiptRecieved } = this.props;
     if (window.web3 !== undefined) {
-      window.web3.currentProvider
+      if (this.state.mobileBrowser) {
+        window.web3.currentProvider
         .scanQRCode(/(.+$)/)
         .then(data => {
           this.setState({ string: `DATA IS: ${data}` })
@@ -70,6 +78,11 @@ class App extends Component {
           this.setState({ string: `ERROR: ${err}` })
           console.log('Error:', err)
         })
+      } else {
+        alert(`Apparently you are not using an Ethereum mobile browser. 
+        Please use Cipher or Status.`);
+      }
+
     }
     // else {
     //   // // TODO: remove this!!!!!
@@ -107,7 +120,9 @@ class App extends Component {
 
   render() {
     const { readyToPlay, displayTileInfo, activeTileInfo, activeNumber, help, solved } = this.props;
+    const { onRequiredNetwork, web3Loading } = this.state;
     return (
+      !onRequiredNetwork ? <Network loading={web3Loading}/> : (
       <div className="App">
         {this.state.string && <h3 style={{zIndex: 1000, marginTop: '200px'}}>{this.state.string}</h3>}
         <Info
@@ -129,7 +144,7 @@ class App extends Component {
           </div>
         </div>
       </div>
-    );
+    ));
   }
 }
 

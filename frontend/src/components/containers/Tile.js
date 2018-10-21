@@ -24,16 +24,17 @@ class Tile extends Component {
   }
 
   render() {
-    const { x, y, number, hasToken, readyToPlay, solved } = this.props;
+    const { x, y, number, hasToken, readyToPlay, solved, claimedToken } = this.props;
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
     const isVisible = hasToken ? '' : 'not-visible';
+    const isPulsing = claimedToken ? 'pulsing' : '';
     const displayPlaceholder = readyToPlay ? '' : 'display-placeholder';
     const initalAnimate = !this.state.initalAnimate ? '' : 'initial-animate';
     const solvedClass = solved ? 'solved' : '';
     return (
       <div
-        className={`tile tile-${number} ${isVisible} ${displayPlaceholder} ${initalAnimate} ${solvedClass}`}
+        className={`tile tile-${number} ${isVisible} ${displayPlaceholder} ${initalAnimate} ${solvedClass} ${isPulsing}`}
         onClick={() => this.moveTile(y, x)}
         style={{ top, left }}
       >
@@ -55,7 +56,8 @@ function mapStateToProps(state, ownProps) {
     x,
     y,
     canInteract: state.get('canInteract'),
-    hasToken: state.getIn(['user', 'tokens', `${ownProps.number}`]) === true,
+    claimedToken: state.getIn(['user', 'tokens', `${ownProps.number}`]) === 'claimed',
+    hasToken: state.getIn(['user', 'tokens', `${ownProps.number}`]) !== false,
     readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),
     solved: state.get('solved'),
   };

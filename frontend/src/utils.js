@@ -1,3 +1,3 @@
-const allTokensReducer = (a, b) => a && b;
+const allTokensReducer = (a, b) => a && b === true;
 
 export default allTokensReducer;

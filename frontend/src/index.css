@@ -35,6 +35,7 @@ li {
 
 /* buttons */
 button {
+  font-family: 'Lora', serif;
   padding: 10px 16px;
   outline: none;
   font-size: 32px;
@@ -222,6 +223,13 @@ h3 {
   background: black;
 }
 
+.tile.pulsing {
+  animation-name: pulse;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+
 .tile.initial-animate {
   transition: all 1s linear;
 }
@@ -242,6 +250,7 @@ h3 {
   right: 0;
   left: 0;
   z-index: -1;
+  transition: all 100ms linear;
 }
 
 .tile:not(.initial-animate):not(.solved)::after {
@@ -344,4 +353,10 @@ h3 {
   /* TODO: add back when puzzle is solved; */
   background: url("./assets/5.jpg") no-repeat center center;
   background-size: contain;
+}
+
+@keyframes pulse {
+  0%    {opacity: 1;}
+  50%   {opacity: 0.8;}
+  100%  {opacity: 1;}
 }

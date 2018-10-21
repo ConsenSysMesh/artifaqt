@@ -8,6 +8,7 @@ import { requiredNetworkId } from '../../config';
 import { Artifaqt, web3, claimToken } from '../../web3';
 import allTokensReducer from '../../utils';
 
+
 class App extends Component {
 
   constructor(props) {
@@ -56,34 +57,28 @@ class App extends Component {
   }
 
   claimToken() {
+    const { address, tokenClaimed, receiptRecieved } = this.props;
     if (window.web3 !== undefined) {
       window.web3.currentProvider
-        .scanQRCode()
-        // .scanQRCode()
+        .scanQRCode(/(.+$)/)
         .then(data => {
           this.setState({ string: `DATA IS: ${data}` })
           console.log('QR Scanned:', data)
+          claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
         })
         .catch(err => {
           this.setState({ string: `ERROR: ${err}` })
           console.log('Error:', err)
         })
-      // window.web3.currentProvider
-      //   .scanQRCode()
-      //   // .scanQRCode(/(.+$)/)
-      //   .then(data => {
-      //     this.setState({ string: `DATA IS: ${data}` })
-      //     claimToken(JSON.parse(data), this.props.address, this.fetchUserAccounts)
-      //   })
-      //   .catch(err => {
-      //     this.setState({ string: `ERROR: ${err}` })
-      //     console.log('Error:', err)
-      //   })
-    } else {
-      this.setState({ string: 'data' })
-      // TODO: remove this!!!!!
-      this.props.claimToken()
     }
+    // else {
+    //   // // TODO: remove this!!!!!
+    //   // start += 1;
+    //   // this.props.claimToken(start)
+    //   // setTimeout(() => {
+    //   //   this.props.addToken(start)
+    //   // }, 3000)
+    // }
   }
 
   fetchUserAccounts() {
@@ -102,10 +97,10 @@ class App extends Component {
     for (let i=1;i<9;i++) {
       Artifaqt.methods.ownerHasTokenType(address, i - 1).call()
       .then(res => {
+        // changed this to only set token to true if tx has been mined
+        // allows for 'claimed' tokens which have recieved a receipt
+        if (res && (tokens.get(`${i}`) !== res)) updateUserToken(i, res);
         console.log(`token ${i}: ${res}`);
-        if (tokens.get(`${i}`) !== res) {
-          updateUserToken(i, res);
-        }
       })
     }
   }
@@ -114,7 +109,6 @@ class App extends Component {
     const { readyToPlay, displayTileInfo, activeTileInfo, activeNumber, help, solved } = this.props;
     return (
       <div className="App">
-
         {this.state.string && <h3 style={{zIndex: 1000, marginTop: '200px'}}>{this.state.string}</h3>}
         <Info
           displayTileInfo={displayTileInfo}
@@ -157,7 +151,8 @@ const mapDispatchToProps = (dispatch) => ({
     updateUserToken: (index, value) => dispatch({ type: 'UPDATE_USER_TOKEN', index, value }),
     openHelp: () => dispatch({ type: 'OPEN_HELP' }),
     closeOverlay: () => dispatch({ type: 'CLOSE_OVERLAY' }),
-    claimToken: () => dispatch({ type: 'ADD_TOKEN' }),
+    tokenClaimed: index => dispatch({ type: 'TOKEN_CLAIMED', index }),
+    receiptRecieved: index => dispatch({ type: 'ON_RECEIPT', index }),
 });
 
 export default connect(

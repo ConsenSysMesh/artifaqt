@@ -37,11 +37,11 @@ const reducer = (state = fromJS(initialState), action) => {
       return state.setIn(['user', 'tokens', `${action.index}`], action.value);
     case 'DISPLAY_INFO':
       return state.setIn(['tokenInformation', 'open'], true)
+                  .setIn(['tokenInformation', 'help'], false)
                   .setIn(['tokenInformation', 'activeNumber'], action.number);
-    case 'TOGGLE_INFO':
-      return state.setIn(['tokenInformation', 'open'], false)
-                  .setIn(['tokenInformation', 'help'], false);
-    case 'TOGGLE_HELP':
+    case 'CLOSE_OVERLAY':
+      return state.setIn(['tokenInformation', 'open'], false);
+    case 'OPEN_HELP':
       return state.setIn(['tokenInformation', 'open'], true)
                   .setIn(['tokenInformation', 'help'], true);
     default :
@@ -99,7 +99,7 @@ const mixGrid = state => {
   let currentZeroY = 1, currentZeroX = 1;
   // switch things 200 times based on location of 0
   // always assumes 0 is at 1,1 - line 68
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 150; i++) {
     // finds possible switches and makes sure it never reverses previous switch
     const possibleSwitches = coodrinatesToSwitch(currentZeroY, currentZeroX, lastY, lastX);
     // selects a random one
@@ -115,6 +115,11 @@ const mixGrid = state => {
 
     currentZeroY = parseInt(switchY);
     currentZeroX = parseInt(switchX);
+
+    // now makes sure middle square is empty
+    if (currentZeroY === 1 && currentZeroX === 1 && i > 100) {
+      i = 150;
+    }
   }
 
   return state.set('canInteract', true);

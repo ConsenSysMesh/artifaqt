@@ -29,6 +29,46 @@ li {
   font-style: italic;
 }
 
+
+
+
+
+/* buttons */
+button {
+  padding: 10px 16px;
+  outline: none;
+  font-size: 32px;
+  box-shadow: none;
+  transition: all 200ms linear;
+  color: white;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* claim button */
+.claim-button-container button {
+  border: 3px solid white;
+  background: black;
+  font-family: 'Lora', serif;
+}
+
+.claim-button-container button:hover {
+  background: white;
+  color: black;
+}
+
+.how-top-play-container button {
+  font-size: 16px;
+  background: transparent;
+  border: 0;
+}
+
+
+
+
+
 .App {
 	top: 0;
   bottom: 0;
@@ -37,9 +77,18 @@ li {
   position: fixed;
 }
 
-/*.starter-elements-container {
+.claim-button-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transition: all 200ms ease-in;
+}
 
-}*/
+.claim-button-container.animate-out {
+  bottom: -100px;
+}
 
 h1 {
   position: absolute;
@@ -47,20 +96,24 @@ h1 {
   left: 0;
   right: 0;
   text-align: center;
+  transition: all 200ms ease-in;
 }
 
-.claim-button-container {
+h1.animate-out {
+  top: -100px;
+}
+
+.how-top-play-container {
   position: absolute;
-  bottom: 20px;
-  left: 0;
+  top: 0;
   right: 0;
-  text-align: center;
+  z-index: 1;
 }
 
 
 
 
-.background-video, .grid-container, .introductory-container {
+.background-video, .grid-container, .infomation-container {
   top: 0;
   bottom: 0;
   right: 0;
@@ -74,36 +127,23 @@ h1 {
   text-align: center;
 }
 
-.introductory-container {
+.infomation-container {
   text-align: center;
   z-index: 2;
   text-shadow: 0 0 5px black;
   /*transition: all 1.5s ease-in;*/
   transition: transform 200ms ease-in;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.9);
   padding: 80px 30px;
   transform: translateY(-100%);
   overflow: scroll;
 }
-
-/*.introductory-container.animate-out {
+.infomation-container.animate-out {
   transform: rotate(3600deg) scale(0);
-}*/
+}
 
-.introductory-container.visible {
+.infomation-container.visible {
   transform: translateY(0%);
-}
-
-.how-top-play-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 1
-}
-
-.how-top-play-container button {
-  font-size: 16px;
-  border: 3px solid black;
 }
 
 .background-video.hidden {
@@ -122,23 +162,7 @@ h1 {
   margin: 20px auto;
 }
 
-button {
-	border: 3px solid white;
-  padding: 10px 16px;
-  background: black;
-  color: white;
-  font-family: 'Lora', serif;
-  outline: none;
-  box-shadow: none;
-  font-size: 32px;
-  transition: all 200ms linear;
-}
 
-button:hover {
-  cursor: pointer;
-  background: white;
-  color: black;
-}
 
 h3 {
   margin-bottom: 0px;
@@ -220,8 +244,12 @@ h3 {
   z-index: -1;
 }
 
-.tile:not(.initial-animate)::after {
+.tile:not(.initial-animate):not(.solved)::after {
   box-shadow: 0 0 23px gold;
+}
+
+.tile.tile-info:not(.initial-animate)::after {
+  box-shadow: 0 0 23px white;
 }
 
 .tile-0::after {
@@ -270,8 +298,13 @@ h3 {
 }
 .tile-0{
   /* TODO: add back when puzzle is solved; */
-  /*background: url("./assets/5.jpg") no-repeat center center;*/
   background: transparent;
+  background-size: contain;
+  transform: all 1.5s linear;
+}
+.tile-0.solved{
+  /* TODO: add back when puzzle is solved; */
+  background: url("./assets/5.jpg") no-repeat center center;
   background-size: contain;
 }
 

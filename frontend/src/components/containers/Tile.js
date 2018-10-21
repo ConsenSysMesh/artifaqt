@@ -19,20 +19,21 @@ class Tile extends Component {
   }
 
   moveTile(y, x) {
-    if (this.props.canInteract) this.props.attemptMove(y, x);
+    if (this.props.canInteract && !this.props.solved) this.props.attemptMove(y, x);
     else this.props.displayInfo(this.props.number);
   }
 
   render() {
-    const { x, y, number, hasToken, readyToPlay } = this.props;
+    const { x, y, number, hasToken, readyToPlay, solved } = this.props;
     const top = `${y * 100}px`;
     const left = `${x * 100}px`;
     const isVisible = hasToken ? '' : 'not-visible';
     const displayPlaceholder = readyToPlay ? '' : 'display-placeholder';
     const initalAnimate = !this.state.initalAnimate ? '' : 'initial-animate';
+    const solvedClass = solved ? 'solved' : '';
     return (
       <div
-        className={`tile tile-${number} ${isVisible} ${displayPlaceholder} ${initalAnimate}`}
+        className={`tile tile-${number} ${isVisible} ${displayPlaceholder} ${initalAnimate} ${solvedClass}`}
         onClick={() => this.moveTile(y, x)}
         style={{ top, left }}
       >
@@ -56,6 +57,7 @@ function mapStateToProps(state, ownProps) {
     canInteract: state.get('canInteract'),
     hasToken: state.getIn(['user', 'tokens', `${ownProps.number}`]) === true,
     readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),
+    solved: state.get('solved'),
   };
 }
 

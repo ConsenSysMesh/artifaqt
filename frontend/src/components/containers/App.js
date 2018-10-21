@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import Grid from '../ui/Grid';
 import Video from '../ui/Video';
-import Intro from '../ui/Intro';
+import Info from '../ui/Info';
 import { requiredNetworkId } from '../../config';
 import { Artifaqt, web3, claimToken } from '../../web3';
 import allTokensReducer from '../../utils';
@@ -51,14 +51,14 @@ class App extends Component {
     if (!prevProps.readyToPlay && this.props.readyToPlay) {
       setTimeout(() => {
         this.props.mixUp()
-      }, 2000);
+      }, 1000);
     }
   }
 
   claimToken() {
     if (window.web3 !== undefined) {
       window.web3.currentProvider
-        .scanQRCode(/(.+$)/)
+        .scanQRCode()
         // .scanQRCode()
         .then(data => {
           this.setState({ string: `DATA IS: ${data}` })
@@ -111,30 +111,28 @@ class App extends Component {
   }
 
   render() {
-    const { readyToPlay, displayTileInfo, activeTileInfo, activeNumber, help } = this.props;
+    const { readyToPlay, displayTileInfo, activeTileInfo, activeNumber, help, solved } = this.props;
     return (
       <div className="App">
-        <Intro
+
+        {this.state.string && <h3 style={{zIndex: 1000, marginTop: '200px'}}>{this.state.string}</h3>}
+        <Info
           displayTileInfo={displayTileInfo}
           activeTileInfo={activeTileInfo}
-          readyToPlay={readyToPlay}
-          toggleInfo={() => this.props.toggleInfo()}
+          closeOverlay={() => this.props.closeOverlay()}
           activeNumber={activeNumber}
           help={help}
         />
-        <div className="starter-elements-container">
+        <Video readyToPlay={readyToPlay && !solved} />
+        <div className="grid-container">
           <div className="how-top-play-container">
-            <button onClick={() => this.props.toggleHelp()}>?&#191;?</button>
+            <button onClick={() => this.props.openHelp()}>?&#191;?</button>
           </div>
-          <h1>artifaqts</h1>
-          {this.state.string && <h3 style={{zIndex: 1000, marginTop: '200px'}}>{this.state.string}</h3>}
-          <div className="claim-button-container">
+          <Grid />
+          <h1 className={readyToPlay ? 'animate-out': ''}>artifaqts</h1>
+          <div className={`claim-button-container ${readyToPlay ? 'animate-out': ''}`}>
             <button onClick={() => this.claimToken()}>scan qr code</button>
           </div>
-        </div>
-        <Video readyToPlay={readyToPlay} />
-        <div className="grid-container">
-          <Grid />
         </div>
       </div>
     );
@@ -150,14 +148,15 @@ const mapStateToProps = (state) => ({
   activeTileInfo: state.getIn(['tokenInformation', state.getIn(['tokenInformation', 'activeNumber']).toString()]),
   activeNumber: state.getIn(['tokenInformation', 'activeNumber']),
   help: state.getIn(['tokenInformation', 'help']),
+  solved: state.get('solved'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
     mixUp: () => dispatch({ type: 'MIX' }),
     updateUserAddress: (address) => dispatch({ type: 'UPDATE_USER_ADDRESS', address }),
     updateUserToken: (index, value) => dispatch({ type: 'UPDATE_USER_TOKEN', index, value }),
-    toggleHelp: () => dispatch({ type: 'TOGGLE_HELP' }),
-    toggleInfo: () => dispatch({ type: 'TOGGLE_INFO' }),
+    openHelp: () => dispatch({ type: 'OPEN_HELP' }),
+    closeOverlay: () => dispatch({ type: 'CLOSE_OVERLAY' }),
     claimToken: () => dispatch({ type: 'ADD_TOKEN' }),
 });
 

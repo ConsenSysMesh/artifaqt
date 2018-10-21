@@ -16,6 +16,15 @@ if (fs.existsSync('secrets.json')) {
 }
 
 module.exports = {
+    // 
+    solc: {
+        optimizer: {
+            enabled: true,
+            runs: 1000,
+        },
+    },
+
+    //
     networks: {
         ganache: {
             host: 'localhost',

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "./../eip721/EIP721.sol";
 
@@ -6,11 +6,15 @@ import "./../eip721/EIP721.sol";
 contract Artifaqt is EIP721 {
     address public admin;
 
+    // Array holding the sin hashes
     bytes32[] private sins;
 
     // Mapping from token ID to token type
     mapping(uint256 => uint256) internal typeOfToken;
 
+    /// @notice Contract constructor
+    /// @dev Generates the keccak256 hashes of each sin that will be used
+    /// when claiming tokens. Saves the admin. Sets a name and symbol.
     constructor() public {
         // Limbo
         sins.push(keccak256("Those who were never baptised."));
@@ -39,28 +43,56 @@ contract Artifaqt is EIP721 {
         symbol = "ATQ";
     }
 
+    /// @notice Claim tokens by providing the sin payload
+    /// @dev Reverts unless the payload was correctly created
+    /// @param _sinPayload = keccak256(keccak256(sin) + playerAddress)
+    /// sin must be one of strings hashed in the constructor that the player will find
+    /// scattered across the DevCon4 conference
+    /// @param _tokenType A number from 0 to 8 representing the sin type
     function claimToken(
-        bytes32 _sin,
-        uint256 _sinIndex) public
-    {
-        bytes32 sinHash = sins[_sinIndex];
-
+        bytes32 _sinPayload,
+        uint256 _tokenType
+    ) external {
         // Make sure it's the correct sin
-        require(_sin == keccak256(abi.encodePacked(sinHash, msg.sender)));
+        require(_sinPayload == keccak256(abi.encodePacked(sins[_tokenType], msg.sender)));
 
         // Make sure the user does not have this type of token
-        require(ownerHasTokenType(msg.sender, _sinIndex) == false);
+        require(ownerHasTokenType(msg.sender, _tokenType) == false);
 
         // Create and add token
         uint256 tokenId = totalSupply();
-        addToken(msg.sender, tokenId, _sinIndex);
+        addToken(msg.sender, tokenId, _tokenType);
 
-        emit TokenClaimed(tokenId, _sinIndex, msg.sender);
+        // Emit create event
+        emit Transfer(0x0, msg.sender, tokenId);
     }
 
+    /// @notice The admin can generate tokens for players
+    /// @dev Reverts unless the user already has the token type
+    /// @param _to The player's address
+    /// @param _tokenType A number from 0 to 8 representing the sin type
+    function mintToken(
+        address _to,
+        uint256 _tokenType
+    ) external onlyAdmin {
+        // Create and add token
+        uint256 tokenId = totalSupply();
+        addToken(_to, tokenId, _tokenType);
+
+        // Emit create event
+        emit Transfer(0x0, _to, tokenId);
+    }
+
+    /// @notice Returns the token id, owner and type
+    /// @dev Throws unless _tokenId exists
+    /// @param _tokenId The token by id
+    /// @return
+    /// - token index
+    /// - owner of token
+    /// - type of token
     function getToken(
         uint256 _tokenId
-    ) public view returns (uint256, address, uint256) {
+    ) external view returns (uint256, address, uint256) {
         return (
             allTokensIndex[_tokenId],
             ownerOfToken[_tokenId],
@@ -68,9 +100,12 @@ contract Artifaqt is EIP721 {
         );
     }
 
-    function getPlayerTokenTypes(
+    /// @notice Returns the claimed tokens for player
+    /// @dev Returns an empty array if player does not have any claimed tokens
+    /// @param _player The player's address
+    function getTokenTypes(
         address _player
-    ) public view returns (uint256[]) {
+    ) external view returns (uint256[]) {
         uint256[] memory claimedTokens = new uint256[](ownedTokens[_player].length);
 
         for (uint256 i = 0; i < ownedTokens[_player].length; i++) {
@@ -80,29 +115,28 @@ contract Artifaqt is EIP721 {
         return claimedTokens;
     }
 
+    /// @notice Returns true of the `_player` has the requested `_tokenType`
+    /// @dev
+    /// @param _player The player's address
+    /// @param _tokenType A number from 0 to 8 representing the sin type
     function ownerHasTokenType(
-        address _owner,
-        uint256 _sinIndex
-    ) public view returns (bool) {
-        for (uint256 i = 0; i < ownedTokens[_owner].length; i++) {
-            if (typeOfToken[ownedTokens[_owner][i]] == _sinIndex) {
+        address _player,
+        uint256 _tokenType
+    ) internal view returns (bool) {
+        for (uint256 i = 0; i < ownedTokens[_player].length; i++) {
+            if (typeOfToken[ownedTokens[_player][i]] == _tokenType) {
                 return true;
             }
         }
         return false;
     }
 
-    function mintToken(
-        address _to, 
-        uint256 _sinIndex
-    ) public onlyOwner {
-        // Create and add token
-        uint256 tokenId = totalSupply();
-        addToken(_to, tokenId, _sinIndex);
-
-        emit TokenClaimed(tokenId, _sinIndex, msg.sender);
-    }
-
+    /// @notice Adds a token for the player
+    /// @dev Calls the `super.addToken(address _to, uint256 _tokenId)` method and
+    /// saves the token type also. The `_tokenId` must not already exist.
+    /// @param _to The player's address
+    /// @param _tokenId The new token id
+    /// @param _tokenType A number from 0 to 8 representing the sin type
     function addToken(
         address _to,
         uint256 _tokenId,
@@ -114,9 +148,7 @@ contract Artifaqt is EIP721 {
         typeOfToken[_tokenId] = _tokenType;
     }
 
-    event TokenClaimed(uint256 tokenId, uint256 sinType, address player);
-
-    modifier onlyOwner() {
+    modifier onlyAdmin() {
         require(msg.sender == admin);
         _;
     }

@@ -22,7 +22,7 @@ contract('Artifaqt', async (accounts) => {
         owner = accounts[0];
         artifaqt = await ArtifaqtContract.new({ from: owner });
 
-        const receipt = await web3.eth.getTransactionReceipt(artifaqt.transactionHash);
+        await web3.eth.getTransactionReceipt(artifaqt.transactionHash);
 
         // Nice players
         player = accounts[1];
@@ -41,9 +41,6 @@ contract('Artifaqt', async (accounts) => {
                 sinIndex,
                 { from: player },
             );
-
-            // TODO: optimize gas cost
-            // console.log(`gasUsed = ${c.receipt.gasUsed}`);
 
             assert.equal(
                 (await artifaqt.balanceOf.call(player)).toNumber(),
@@ -80,7 +77,7 @@ contract('Artifaqt', async (accounts) => {
                 { from: player },
             );
 
-            const tokenId = claimTokenResult.logs[0].args.tokenId.toNumber();
+            const tokenId = claimTokenResult.logs[0].args._tokenId.toNumber();
 
             // Make sure the player claimed an additional token
             assert.equal(
@@ -117,41 +114,48 @@ contract('Artifaqt', async (accounts) => {
 
         // Token id
         assert.notEqual(
-            claimTokenResultPlayer1.logs[0].args.tokenId,
-            claimTokenResultPlayer2.logs[0].args.tokenId,
+            claimTokenResultPlayer1.logs[0].args._tokenId,
+            claimTokenResultPlayer2.logs[0].args._tokenId,
             'token ids must be different',
+        );
+
+        const tokenPlayer1 = await artifaqt.getToken.call(
+            claimTokenResultPlayer1.logs[0].args._tokenId,
+        );
+        const tokenPlayer2 = await artifaqt.getToken.call(
+            claimTokenResultPlayer2.logs[0].args._tokenId,
         );
 
         // Token type
         assert.equal(
-            claimTokenResultPlayer1.logs[0].args.sinType.toNumber(),
+            tokenPlayer1[2].toNumber(),
             0,
             'token type must be 0 for player 1',
         );
         assert.equal(
-            claimTokenResultPlayer2.logs[0].args.sinType.toNumber(),
+            tokenPlayer2[2].toNumber(),
             1,
             'token type must be 1 for player 2',
         );
 
         // Token owner
         assert.equal(
-            claimTokenResultPlayer1.logs[0].args.player,
+            claimTokenResultPlayer1.logs[0].args._to,
             player,
             'owner of token must be player 1',
         );
         assert.equal(
-            claimTokenResultPlayer2.logs[0].args.player,
+            claimTokenResultPlayer2.logs[0].args._to,
             player2,
             'owner of token must be player 2',
         );
 
-        const token1 = await artifaqt.getToken.call(claimTokenResultPlayer1.logs[0].args.tokenId);
-        const token2 = await artifaqt.getToken.call(claimTokenResultPlayer2.logs[0].args.tokenId);
+        const token1 = await artifaqt.getToken.call(claimTokenResultPlayer1.logs[0].args._tokenId);
+        const token2 = await artifaqt.getToken.call(claimTokenResultPlayer2.logs[0].args._tokenId);
 
         // Token id
-        assert.equal(token1[0].toNumber(), claimTokenResultPlayer1.logs[0].args.tokenId);
-        assert.equal(token2[0].toNumber(), claimTokenResultPlayer2.logs[0].args.tokenId);
+        assert.equal(token1[0].toNumber(), claimTokenResultPlayer1.logs[0].args._tokenId);
+        assert.equal(token2[0].toNumber(), claimTokenResultPlayer2.logs[0].args._tokenId);
 
         // Token owner
         assert.equal(token1[1], player);
@@ -198,10 +202,10 @@ contract('Artifaqt', async (accounts) => {
 
     it("claim token: return the player's claimed types of token", async () => {
         // Player claims some tokens
-        const claimTokens = [0, 5, 8].sort();
-        for (let i = 0; i < claimTokens.length; i++) {
+        const claimTokens = [6, 5, 8, 0];
+        for (let i = 0; i < claimTokens.length; i += 1) {
             // Token type
-            let sin = claimTokens[i];
+            const sin = claimTokens[i];
 
             // Claim token
             await artifaqt.claimToken(
@@ -212,10 +216,10 @@ contract('Artifaqt', async (accounts) => {
         }
 
         // Player must have these tokens claimed
-        const playerTokens = await artifaqt.getPlayerTokenTypes.call(player);
+        const playerTokens = await artifaqt.getTokenTypes.call(player);
 
         // Check if the claimed tokens match
-        for (let i = 0; i < claimTokens.length; i++) {
+        for (let i = 0; i < claimTokens.length; i += 1) {
             assert.equal(
                 claimTokens[i],
                 playerTokens[i].toNumber(),
@@ -227,7 +231,6 @@ contract('Artifaqt', async (accounts) => {
             playerTokens.length,
             'claimed tokens length mismatch player tokens length',
         );
-
     });
 
     it('admin: mint token for player', async () => {
@@ -256,13 +259,13 @@ contract('Artifaqt', async (accounts) => {
         );
 
         // Get token data
-        const token1Data = await artifaqt.getToken.call(token1.logs[0].args.tokenId.toNumber());
-        const token2Data = await artifaqt.getToken.call(token2.logs[0].args.tokenId.toNumber());
+        const token1Data = await artifaqt.getToken.call(token1.logs[0].args._tokenId.toNumber());
+        const token2Data = await artifaqt.getToken.call(token2.logs[0].args._tokenId.toNumber());
 
         // Check token 1
         assert.equal(
             token1Data[0].toNumber(),
-            token1.logs[0].args.tokenId.toNumber(),
+            token1.logs[0].args._tokenId.toNumber(),
             'token 1 id not as expected',
         );
         assert.equal(token1Data[1], player, 'token 1 owner does not match player');
@@ -271,7 +274,7 @@ contract('Artifaqt', async (accounts) => {
         // Check token 2
         assert.equal(
             token2Data[0].toNumber(),
-            token2.logs[0].args.tokenId.toNumber(),
+            token2.logs[0].args._tokenId.toNumber(),
             'token 2 id not as expected',
         );
         assert.equal(token2Data[1], player, 'token 2 owner does not match player');

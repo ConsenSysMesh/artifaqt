@@ -169,6 +169,8 @@ h1.animate-out {
 .background-video {
   z-index: -1;
   transition: opacity 3s linear;
+  background: url(./assets/flames.gif) center;
+  background-size: cover;
 }
 
 .grid {

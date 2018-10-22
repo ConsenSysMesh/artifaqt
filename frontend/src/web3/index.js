@@ -25,29 +25,26 @@ export const claimToken = (sin, address, callback, tokenClaimed, receiptRecieved
   const sinPayloadHash = web3.utils.sha3(sinHash + address.substr(2), { encoding: 'hex' });
   const sinIndex = sinToIndex(sin);
 
-  console.log(`sinHash = ${sinHash}`);
-  console.log(`sinIndex = ${sinIndex}`);
-  console.log(`sinPayloadHash = ${sinPayloadHash}`);
+  // console.log(`sinHash = ${sinHash}`);
+  // console.log(`sinIndex = ${sinIndex}`);
+  // console.log(`sinPayloadHash = ${sinPayloadHash}`);
 
-  tokenClaimed(sinIndex);
-
-  setTimeout(() => {
-    receiptRecieved(sinIndex);
-  }, 5000)
-
-  // Artifaqt.methods.claimToken(
-  //   sinPayloadHash,
-  //   sinIndex,
-  // ).send({ from: address, gasLimit: 500000, gasPrice: 10**10 })
-  //     .on('transactionHash',  hash => console.log(`hash = ${hash}`))
-  //     .on('receipt', receipt => {
-  //       console.log(receipt)
-  //       receiptRecieved(sinIndex);
-  //       callback();
-  //     })
-  //     .on('error', () => {
-  //       alert(`Something went wrong.
-  //       You probably already have this token`)
-  //       callback()
-  //     });
+  Artifaqt.methods.claimToken(
+    sinPayloadHash,
+    sinIndex,
+  ).send({ from: address, gasLimit: 500000, gasPrice: 10**10 })
+      .on('transactionHash',  hash => {
+        tokenClaimed(sinIndex);
+        console.log(`hash = ${hash}`)
+      })
+      .on('receipt', receipt => {
+        console.log(receipt)
+        receiptRecieved(sinIndex);
+        callback();
+      })
+      .on('error', () => {
+        alert(`Something went wrong.
+        You probably already have this token`)
+        callback()
+      });
 }

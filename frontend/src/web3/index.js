@@ -15,8 +15,10 @@ const sins = {
   "Those who worshipped false idols.": 6,
   "Those violent against others, one’s self, and God.": 7,
   "Those who used lies and deception for personal gain.": 8,
-  // "Those who have betrayed their loved ones.": 9,
+  "Those who have betrayed their loved ones.": 9,
 }
+
+export const keys = Object.keys(sins);
 
 const sinToIndex = sin => sins[sin];
 
@@ -25,26 +27,20 @@ export const claimToken = (sin, address, callback, tokenClaimed, receiptRecieved
   const sinPayloadHash = web3.utils.sha3(sinHash + address.substr(2), { encoding: 'hex' });
   const sinIndex = sinToIndex(sin);
 
-  // console.log(`sinHash = ${sinHash}`);
-  // console.log(`sinIndex = ${sinIndex}`);
-  // console.log(`sinPayloadHash = ${sinPayloadHash}`);
-
-  Artifaqt.methods.claimToken(
-    sinPayloadHash,
-    sinIndex,
-  ).send({ from: address, gasLimit: 500000, gasPrice: 10**10 })
-      .on('transactionHash',  hash => {
-        tokenClaimed(sinIndex);
-        console.log(`hash = ${hash}`)
-      })
-      .on('receipt', receipt => {
-        console.log(receipt)
-        receiptRecieved(sinIndex);
-        callback();
-      })
-      .on('error', () => {
-        alert(`Something went wrong.
-        You probably already have this token`)
-        callback()
-      });
+  Artifaqt.methods.claimToken(sinPayloadHash)
+    .send({ from: address, gasLimit: 500000, gasPrice: 10**10 })
+    .on('transactionHash',  hash => {
+      tokenClaimed(sinIndex);
+      console.log(`hash = ${hash}`)
+    })
+    .on('receipt', receipt => {
+      console.log(receipt)
+      receiptRecieved(sinIndex);
+      callback();
+    })
+    .on('error', () => {
+      alert(`Something went wrong.
+      You probably already have this token`)
+      callback()
+    });
 }

@@ -20,7 +20,7 @@ class Tile extends Component {
 
   moveTile(y, x) {
     if (this.props.canInteract && !this.props.solved) this.props.attemptMove(y, x);
-    else this.props.displayInfo(this.props.number);
+    else if (!this.props.solved) this.props.displayInfo(this.props.number);
   }
 
   render() {

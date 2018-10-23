@@ -178,12 +178,48 @@ h1.animate-out {
 	height: 300px;
 	position: relative;
   margin: 20px auto;
+  perspective: 1000px;
+}
+
+.grid-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.grid.solved.flipped .grid-inner {
+  transform: rotateY(180deg);
+}
+
+.grid-front, .grid-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.grid-back {
+  transform: rotateY(180deg);
+  background: black;
+  padding: 5px;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+}
+
+.full-width {
+  width: 100%;
 }
 
 
 
 h3 {
   margin-bottom: 0px;
+  letter-spacing: 3px;
+  font-style: italic;
 }
 
 /* info section */
@@ -328,11 +364,10 @@ h3 {
   background-size: contain;
   transform: all 1.5s linear;
 }
-.tile-0.solved{
-  /* TODO: add back when puzzle is solved; */
+/*.tile-0.solved{
   background: url("./assets/5.jpg") no-repeat center center;
   background-size: contain;
-}
+}*/
 
 .tile-1::before{
   background: url("./assets/1.jpg") no-repeat center center;

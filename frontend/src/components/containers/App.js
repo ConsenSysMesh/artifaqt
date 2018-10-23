@@ -6,18 +6,18 @@ import Video from '../ui/Video';
 import Info from '../ui/Info';
 import Network from '../ui/Network';
 import { requiredNetworkId } from '../../config';
-import { Artifaqt, web3, claimToken } from '../../web3';
+import { Artifaqt, web3, claimToken, keys } from '../../web3';
 import allTokensReducer from '../../utils';
 
-class App extends Component {
 
+// let start = 0;
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       web3Loading: true,
       onRequiredNetwork: true, // hack - if set to false status launches the flames video
       mobileBrowser: false,
-      string: false,
     }
     this.fetchUserTokens = this.fetchUserTokens.bind(this);
     this.fetchUserAccounts = this.fetchUserAccounts.bind(this);
@@ -70,28 +70,21 @@ class App extends Component {
         window.web3.currentProvider
         .scanQRCode(/(.+$)/)
         .then(data => {
-          this.setState({ string: `DATA IS: ${data}` })
           console.log('QR Scanned:', data)
           claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
         })
         .catch(err => {
-          this.setState({ string: `ERROR: ${err}` })
           console.log('Error:', err)
         })
       } else {
-        alert(`Apparently you are not using an Ethereum mobile browser. 
+        alert(`Apparently you are not using an Ethereum mobile browser.
         Please use Cipher or Status.`);
-      }
+        // console.log('sin:', keys[start]);
+        // claimToken(keys[start], address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
+        // start += 1;
 
+      }
     }
-    // else {
-    //   // // TODO: remove this!!!!!
-    //   // start += 1;
-    //   // this.props.claimToken(start)
-    //   // setTimeout(() => {
-    //   //   this.props.addToken(start)
-    //   // }, 3000)
-    // }
   }
 
   fetchUserAccounts() {
@@ -106,16 +99,11 @@ class App extends Component {
   }
 
   fetchUserTokens(address) {
-    const { tokens, updateUserToken } = this.props;
-    for (let i=1;i<9;i++) {
-      Artifaqt.methods.ownerHasTokenType(address, i - 1).call()
-      .then(res => {
-        // changed this to only set token to true if tx has been mined
-        // allows for 'claimed' tokens which have recieved a receipt
-        if (res && (tokens.get(`${i}`) !== res)) updateUserToken(i, res);
-        console.log(`token ${i}: ${res}`);
-      })
-    }
+    const { updateUserToken } = this.props;
+    Artifaqt.methods.getTokenTypes(address).call()
+    .then(res => {
+      res.forEach(tokenIndex => updateUserToken(parseInt(tokenIndex) + 1, true))
+    })
   }
 
   render() {
@@ -124,7 +112,6 @@ class App extends Component {
     return (
       !onRequiredNetwork ? <Network loading={web3Loading}/> : (
       <div className="App">
-        {this.state.string && <h3 style={{zIndex: 1000, marginTop: '200px'}}>{this.state.string}</h3>}
         <Info
           displayTileInfo={displayTileInfo}
           activeTileInfo={activeTileInfo}
@@ -137,7 +124,7 @@ class App extends Component {
           <div className="how-top-play-container">
             <button onClick={() => this.props.openHelp()}>?&#191;?</button>
           </div>
-          <Grid />
+          <Grid solved={solved} />
           <h1 className={readyToPlay ? 'animate-out': ''}>artifaqts</h1>
           <div className={`claim-button-container ${readyToPlay ? 'animate-out': ''}`}>
             <button onClick={() => this.claimToken()}>scan qr code</button>
@@ -151,7 +138,6 @@ class App extends Component {
 const mapStateToProps = (state) => ({
   readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),
   address: state.getIn(['user', 'address']),
-  tokens: state.getIn(['user', 'tokens']),
   displayTileInfo: state.getIn(['tokenInformation', 'open']),
   displayHelp: state.getIn(['tokenInformation', 'open']),
   activeTileInfo: state.getIn(['tokenInformation', state.getIn(['tokenInformation', 'activeNumber']).toString()]),

@@ -201,12 +201,16 @@ h1.animate-out {
   backface-visibility: hidden;
 }
 
+.grid.solved .grid-back{
+  display: flex;
+}
+
 .grid-back {
+  display: none;
   transform: rotateY(180deg);
   background: black;
   padding: 5px;
   border: 2px solid white;
-  display: flex;
   align-items: center;
 }
 

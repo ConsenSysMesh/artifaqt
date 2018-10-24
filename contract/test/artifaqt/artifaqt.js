@@ -231,7 +231,7 @@ contract('Artifaqt', async (accounts) => {
         assert.equal(
             playerTokens + 2,
             (await artifaqt.balanceOf.call(player)).toNumber(),
-            'admin shound mint 2 more tokens for player',
+            'admin should mint 2 more tokens for player',
         );
 
         // Get token data

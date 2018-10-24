@@ -257,7 +257,7 @@ contract('Artifaqt', async (accounts) => {
         assert.equal(token2Data[2], 1, 'token 2 type not as expected');
     });
 
-    it('transfer: players should not be able to transfer or approve transfers', async () => {
+    it('transfer pause: players should not be able to transfer or approve transfers', async () => {
         // Admin mints token for player
         const token = await artifaqt.mintToken(
             player,
@@ -286,21 +286,36 @@ contract('Artifaqt', async (accounts) => {
             safeTransferFrom,
         );
 
-        // Player should not be able to approve an address
-        await assertRevert(
-            artifaqt.approve(player2, tokenId, { from: player }),
-        );
-
-        // Player should not be able to setApprovalForAll
-        await assertRevert(
-            artifaqt.setApprovalForAll(player2, true, { from: player }),
-        );
-
         // Player still owns the token
         assert.equal(
             await artifaqt.ownerOf(tokenId),
             player,
             'player did not transfer token',
+        );
+    });
+
+    it('transfer pause: admin should be able to resume transfers', async () => {
+        // Admin mints token for player
+        const token = await artifaqt.mintToken(
+            player,
+            0,
+            { from: owner },
+        );
+
+        // Minted token id
+        const tokenId = token.logs[0].args._tokenId.toNumber();
+
+        // Admin resumes transfers
+        await artifaqt.allowTransfer(true, { from: owner });
+
+        // Player is able to sent token
+        await artifaqt.transferFrom(player, player2, tokenId, { from: player });
+
+        // Player2 owns the token
+        assert.equal(
+            await artifaqt.ownerOf(tokenId),
+            player2,
+            'player2 should own the token',
         );
     });
 });

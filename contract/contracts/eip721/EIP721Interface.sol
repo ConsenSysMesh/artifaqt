@@ -63,7 +63,7 @@ interface EIP721Interface {
     ///  operator of the current owner.
     /// @param _approved The new approved NFT controller
     /// @param _tokenId The NFT to approve
-    function approve(address _approved, uint256 _tokenId) public payable;
+    function approve(address _approved, uint256 _tokenId) external payable;
 
     /// @notice Enable or disable approval for a third party ("operator") to manage
     ///  all of `msg.sender`'s assets.
@@ -71,7 +71,7 @@ interface EIP721Interface {
     ///  multiple operators per owner.
     /// @param _operator Address to add to the set of authorized operators.
     /// @param _approved True if the operator is approved, false to revoke approval
-    function setApprovalForAll(address _operator, bool _approved) public;
+    function setApprovalForAll(address _operator, bool _approved) external;
 
     /// @notice Get the approved address for a single NFT
     /// @dev Throws if `_tokenId` is not a valid NFT

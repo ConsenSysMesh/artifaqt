@@ -127,7 +127,7 @@ contract EIP721 is EIP721Interface, EIP721MetadataInterface, EIP721EnumerableInt
     ///  operator of the current owner.
     /// @param _approved The new approved NFT controller
     /// @param _tokenId The NFT to approve
-    function approve(address _approved, uint256 _tokenId) public payable
+    function approve(address _approved, uint256 _tokenId) external payable
     tokenExists(_tokenId)
     allowedToOperate(_tokenId) {
         address owner = ownerOfToken[_tokenId];
@@ -140,7 +140,7 @@ contract EIP721 is EIP721Interface, EIP721MetadataInterface, EIP721EnumerableInt
     ///  multiple operators per owner.
     /// @param _operator Address to add to the set of authorized operators.
     /// @param _approved True if the operator is approved, false to revoke approval
-    function setApprovalForAll(address _operator, bool _approved) public {
+    function setApprovalForAll(address _operator, bool _approved) external {
         require(_operator != msg.sender); // can't make oneself an operator
         operators[msg.sender][_operator] = _approved;
         emit ApprovalForAll(msg.sender, _operator, _approved);

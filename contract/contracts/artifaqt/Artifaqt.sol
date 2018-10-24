@@ -7,7 +7,7 @@ contract Artifaqt is EIP721 {
     address public admin;
 
     // Bool to pause transfers
-    bool transferPaused = true;
+    bool transferResumed = false;
 
     // Array holding the sin hashes
     bytes32[] private sins;
@@ -168,27 +168,14 @@ contract Artifaqt is EIP721 {
         super.transferFrom(_from, _to, _tokenId);
     }
 
-    /// @notice Change or reaffirm the approved address for an NFT.
-    /// @dev Calls the parent function if transfers are not paused
-    /// @param _approved The new approved NFT controller
-    /// @param _tokenId The NFT to approve
-    function approve(
-        address _approved, 
-        uint256 _tokenId
-    ) public payable transferAllowed {
-        super.approve(_approved, _tokenId);
-    }
-
-    /// @notice Enable or disable approval for a third party ("operator") to manage
-    ///  all of `msg.sender`'s assets.
-    /// @dev Calls the parent function if transfers are not paused
-    /// @param _operator Address to add to the set of authorized operators.
-    /// @param _approved True if the operator is approved, false to revoke approval
-    function setApprovalForAll(
-        address _operator, 
-        bool _approved
-    ) public transferAllowed {    
-        super.setApprovalForAll(_operator, _approved);
+    /// @notice Enables or disables transfers
+    /// @dev Set to `true` to enable transfers or `false` to disable transfers. 
+    /// If it is set to `false` all functions that transfer tokens are paused and will revert.
+    /// Functions that approve transfers (`approve()` and `setTransferForAll()`) still work 
+    /// because they do not transfer tokens immediately.
+    /// @param _resume This should be set to `true` if transfers should be enabled, `false` otherwise
+    function allowTransfer(bool _resume) public onlyAdmin {
+        transferResumed = _resume;
     }
 
     /// @notice Returns true of the `_player` has the requested `_tokenType`
@@ -230,7 +217,7 @@ contract Artifaqt is EIP721 {
     }
 
     modifier transferAllowed() {
-        require(transferPaused == false);
+        require(transferResumed);
         _;
     }
 }

@@ -6,6 +6,9 @@ import "./../eip721/EIP721.sol";
 contract Artifaqt is EIP721 {
     address public admin;
 
+    // Bool to pause transfers
+    bool transferPaused = true;
+
     // Array holding the sin hashes
     bytes32[] private sins;
 
@@ -121,8 +124,72 @@ contract Artifaqt is EIP721 {
         return claimedTokens;
     }
 
-    // TODO: Do not allow any kind of transfers
-    /// @notice Should not all
+    // TODO: Do not allow any kind of transfers if transfer is paused
+    /// @notice Transfers the ownership of a token
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    /// @param data Additional data with no specified format, sent in call to `_to`
+    function safeTransferFrom(
+        address _from, 
+        address _to, 
+        uint256 _tokenId, 
+        bytes data
+    ) public payable transferAllowed {
+        super.safeTransferFrom(_from, _to, _tokenId, data);
+    }
+
+    /// @notice Transfers the ownership of an NFT from one address to another address
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    function safeTransferFrom(
+        address _from, 
+        address _to, 
+        uint256 _tokenId
+    ) public payable transferAllowed {
+        super.safeTransferFrom(_from, _to, _tokenId);
+    }
+
+    /// @notice Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE
+    ///  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE
+    ///  THEY MAY BE PERMANENTLY LOST
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    function transferFrom(
+        address _from, 
+        address _to, 
+        uint256 _tokenId
+    ) public payable transferAllowed {
+        super.transferFrom(_from, _to, _tokenId);
+    }
+
+    /// @notice Change or reaffirm the approved address for an NFT.
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _approved The new approved NFT controller
+    /// @param _tokenId The NFT to approve
+    function approve(
+        address _approved, 
+        uint256 _tokenId
+    ) public payable transferAllowed {
+        super.approve(_approved, _tokenId);
+    }
+
+    /// @notice Enable or disable approval for a third party ("operator") to manage
+    ///  all of `msg.sender`'s assets.
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _operator Address to add to the set of authorized operators.
+    /// @param _approved True if the operator is approved, false to revoke approval
+    function setApprovalForAll(
+        address _operator, 
+        bool _approved
+    ) public transferAllowed {    
+        super.setApprovalForAll(_operator, _approved);
+    }
 
     /// @notice Returns true of the `_player` has the requested `_tokenType`
     /// @dev
@@ -159,6 +226,11 @@ contract Artifaqt is EIP721 {
 
     modifier onlyAdmin() {
         require(msg.sender == admin);
+        _;
+    }
+
+    modifier transferAllowed() {
+        require(transferPaused == false);
         _;
     }
 }

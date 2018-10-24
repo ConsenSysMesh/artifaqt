@@ -273,10 +273,10 @@ contract('Artifaqt', async (accounts) => {
             artifaqt.transferFrom(player, player2, tokenId, { from: player }),
         );
         await assertRevert(
-            artifaqt.safeTransferFrom(player, player2, tokenId, { from: player }),
+            artifaqt.safeTransferFrom['address,address,uint256,bytes'](player, player2, tokenId, { from: player }),
         );
         await assertRevert(
-            artifaqt.safeTransferFrom(player, player2, tokenId, 0x0, { from: player }),
+            artifaqt.safeTransferFrom['address,address,uint256'](player, player2, tokenId, "", { from: player }),
         );
 
         // Player should not be able to approve an address

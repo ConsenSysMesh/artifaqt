@@ -257,7 +257,7 @@ contract('Artifaqt', async (accounts) => {
         assert.equal(token2Data[2], 1, 'token 2 type not as expected');
     });
 
-    it('transfer: players should not be able to transfer or approve approve', async () => {
+    it('transfer: players should not be able to transfer or approve transfers', async () => {
         // Admin mints token for player
         const token = await artifaqt.mintToken(
             player,
@@ -272,11 +272,18 @@ contract('Artifaqt', async (accounts) => {
         await assertRevert(
             artifaqt.transferFrom(player, player2, tokenId, { from: player }),
         );
-        await assertRevert(
-            artifaqt.safeTransferFrom['address,address,uint256,bytes'](player, player2, tokenId, { from: player }),
-        );
-        await assertRevert(
-            artifaqt.safeTransferFrom['address,address,uint256'](player, player2, tokenId, "", { from: player }),
+
+        // Safe transfer should fail
+        // ! This code is different because truffle handles overloaded functions in a different way
+        let safeTransferFrom = false;
+        try {
+            artifaqt.contract.safeTransferFrom['address,address,uint256'](player, player2, tokenId, { from: player, gas: 0x0FFFFF });
+            artifaqt.contract.safeTransferFrom['address,address,uint256,bytes'](player, player2, tokenId, '', { from: player, gas: 0x0FFFFF });
+        } catch (e) {
+            safeTransferFrom = true;
+        }
+        assert.isTrue(
+            safeTransferFrom,
         );
 
         // Player should not be able to approve an address

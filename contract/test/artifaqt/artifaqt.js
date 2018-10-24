@@ -256,4 +256,44 @@ contract('Artifaqt', async (accounts) => {
         assert.equal(token2Data[1], player, 'token 2 owner does not match player');
         assert.equal(token2Data[2], 1, 'token 2 type not as expected');
     });
+
+    it('transfer: players should not be able to transfer or approve approve', async () => {
+        // Admin mints token for player
+        const token = await artifaqt.mintToken(
+            player,
+            0,
+            { from: owner },
+        );
+
+        // Minted token id
+        const tokenId = token.logs[0].args._tokenId.toNumber();
+
+        // Player should not be able to transfer tokens
+        await assertRevert(
+            artifaqt.transferFrom(player, player2, tokenId, { from: player }),
+        );
+        await assertRevert(
+            artifaqt.safeTransferFrom(player, player2, tokenId, { from: player }),
+        );
+        await assertRevert(
+            artifaqt.safeTransferFrom(player, player2, tokenId, 0x0, { from: player }),
+        );
+
+        // Player should not be able to approve an address
+        await assertRevert(
+            artifaqt.approve(player2, tokenId, { from: player }),
+        );
+
+        // Player should not be able to setApprovalForAll
+        await assertRevert(
+            artifaqt.setApprovalForAll(player2, true, { from: player }),
+        );
+
+        // Player still owns the token
+        assert.equal(
+            await artifaqt.ownerOf(tokenId),
+            player,
+            'player did not transfer token',
+        );
+    });
 });

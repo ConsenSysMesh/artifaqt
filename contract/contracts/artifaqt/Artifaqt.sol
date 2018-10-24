@@ -121,6 +121,9 @@ contract Artifaqt is EIP721 {
         return claimedTokens;
     }
 
+    // TODO: Do not allow any kind of transfers
+    /// @notice Should not all
+
     /// @notice Returns true of the `_player` has the requested `_tokenType`
     /// @dev
     /// @param _player The player's address

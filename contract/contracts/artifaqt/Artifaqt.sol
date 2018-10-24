@@ -46,22 +46,28 @@ contract Artifaqt is EIP721 {
     /// @notice Claim tokens by providing the sin payload
     /// @dev Reverts unless the payload was correctly created
     /// @param _sinPayload = keccak256(keccak256(sin) + playerAddress)
-    /// sin must be one of strings hashed in the constructor that the player will find
-    /// scattered across the DevCon4 conference
-    /// @param _tokenType A number from 0 to 8 representing the sin type
+    /// sin must be one of strings hashed in the constructor that the player will find scattered across the DevCon4 conference
     function claimToken(
-        bytes32 _sinPayload,
-        uint256 _tokenType
+        bytes32 _sinPayload
     ) external {
         // Make sure it's the correct sin
-        require(_sinPayload == keccak256(abi.encodePacked(sins[_tokenType], msg.sender)));
+        uint256 tokenType;
+        bool found = false;
+        for(uint256 i = 0; i < 9; i++) {
+            if (_sinPayload == keccak256(abi.encodePacked(sins[i], msg.sender))) {
+                tokenType = i;
+                found = true;
+                break;
+            }
+        }
+        require(found == true);
 
         // Make sure the user does not have this type of token
-        require(ownerHasTokenType(msg.sender, _tokenType) == false);
+        require(ownerHasTokenType(msg.sender, tokenType) == false);
 
         // Create and add token
         uint256 tokenId = totalSupply();
-        addToken(msg.sender, tokenId, _tokenType);
+        addToken(msg.sender, tokenId, tokenType);
 
         // Emit create event
         emit Transfer(0x0, msg.sender, tokenId);

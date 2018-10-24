@@ -35,7 +35,6 @@ contract('Artifaqt', async (accounts) => {
                 // Claim token
                 const tx = await artifaqt.claimToken(
                     createClaimTokenPayload(sins[sinIndex], randomPlayer),
-                    sinIndex,
                     { from: randomPlayer },
                 );
 

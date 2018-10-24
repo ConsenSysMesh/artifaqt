@@ -32,23 +32,6 @@ contract('Artifaqt', async (accounts) => {
         hacker = accounts[9];
     });
 
-    it('claim token: claim each token', async () => {
-        for (let sinIndex = 0; sinIndex < 9; sinIndex += 1) {
-            const sinPayloadHash = createClaimTokenPayload(sins[sinIndex], player);
-
-            await artifaqt.claimToken(
-                sinPayloadHash,
-                sinIndex,
-                { from: player },
-            );
-
-            assert.equal(
-                (await artifaqt.balanceOf.call(player)).toNumber(),
-                sinIndex + 1,
-            );
-        }
-    });
-
     it('claim token: hacker cannot claim token for himself', async () => {
         const sinIndex = 0;
 
@@ -57,7 +40,6 @@ contract('Artifaqt', async (accounts) => {
 
         await assertRevert(artifaqt.claimToken(
             sinPayloadHash,
-            sinIndex,
             { from: hacker },
         ));
 
@@ -73,7 +55,6 @@ contract('Artifaqt', async (accounts) => {
 
             const claimTokenResult = await artifaqt.claimToken(
                 sinPayloadHash,
-                sinIndex,
                 { from: player },
             );
 
@@ -102,13 +83,11 @@ contract('Artifaqt', async (accounts) => {
     it('claim token: multiple players claim different tokens', async () => {
         const claimTokenResultPlayer1 = await artifaqt.claimToken(
             createClaimTokenPayload(sins[0], player),
-            0,
             { from: player },
         );
 
         const claimTokenResultPlayer2 = await artifaqt.claimToken(
             createClaimTokenPayload(sins[1], player2),
-            1,
             { from: player2 },
         );
 
@@ -174,7 +153,6 @@ contract('Artifaqt', async (accounts) => {
         // Player claims one token of first type
         await artifaqt.claimToken(
             createClaimTokenPayload(sins[sinIndex], player),
-            sinIndex,
             { from: player },
         );
 
@@ -188,7 +166,6 @@ contract('Artifaqt', async (accounts) => {
         // Player should fail claiming the same token type
         assertRevert(artifaqt.claimToken(
             createClaimTokenPayload(sins[sinIndex], player),
-            sinIndex,
             { from: player },
         ));
 
@@ -210,7 +187,6 @@ contract('Artifaqt', async (accounts) => {
             // Claim token
             await artifaqt.claimToken(
                 createClaimTokenPayload(sins[sin], player),
-                sin,
                 { from: player },
             );
         }

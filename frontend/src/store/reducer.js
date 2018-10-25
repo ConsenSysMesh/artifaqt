@@ -32,6 +32,8 @@ const reducer = (state = fromJS(initialState), action) => {
       return state.setIn(['user', 'tokens', `${action.index}`], true);
     case 'UPDATE_USER_ADDRESS':
       return state.setIn(['user', 'address'], action.address);
+    case 'UPDATE_USER_BALANCE':
+      return state.setIn(['user', 'balance'], action.balance);
     case 'UPDATE_USER_TOKEN':
       return state.setIn(['user', 'tokens', `${action.index}`], action.value);
     case 'DISPLAY_INFO':

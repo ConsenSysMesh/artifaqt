@@ -64,18 +64,22 @@ class App extends Component {
   }
 
   claimToken() {
-    const { address, tokenClaimed, receiptRecieved } = this.props;
+    const { address, balance, tokenClaimed, receiptRecieved } = this.props;
     if (window.web3 !== undefined) {
       if (this.state.mobileBrowser) {
-        window.web3.currentProvider
-        .scanQRCode(/(.+$)/)
-        .then(data => {
-          console.log('QR Scanned:', data)
-          claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
-        })
-        .catch(err => {
-          console.log('Error:', err)
-        })
+        if (balance > 0) {
+          window.web3.currentProvider
+          .scanQRCode(/(.+$)/)
+          .then(data => {
+            console.log('QR Scanned:', data)
+            claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
+          })
+          .catch(err => {
+            console.log('Error:', err)
+          })
+        } else {
+          alert(`You don't own any ETH - NO PAY, NO PLAY`);
+        }
       } else {
         alert(`Apparently you are not using an Ethereum mobile browser.
         Please use Cipher or Status.`);
@@ -94,6 +98,16 @@ class App extends Component {
         console.log(`address: ${address}`);
         this.props.updateUserAddress(address);
         this.fetchUserTokens(address);
+        this.fetchUserBalance();
+      })
+      .catch(err => console.log(err))
+  }
+
+  fetchUserBalance() {
+    web3.eth.getBalance(this.props.address)
+      .then(balance => {
+        console.log(`balance: ${balance}`);
+        this.props.updateUserBalance(web3.utils.fromWei(balance, 'ether'));
       })
       .catch(err => console.log(err))
   }
@@ -138,6 +152,7 @@ class App extends Component {
 const mapStateToProps = (state) => ({
   readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),
   address: state.getIn(['user', 'address']),
+  balance: state.getIn(['user', 'balance']),
   displayTileInfo: state.getIn(['tokenInformation', 'open']),
   displayHelp: state.getIn(['tokenInformation', 'open']),
   activeTileInfo: state.getIn(['tokenInformation', state.getIn(['tokenInformation', 'activeNumber']).toString()]),
@@ -149,6 +164,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     mixUp: () => dispatch({ type: 'MIX' }),
     updateUserAddress: (address) => dispatch({ type: 'UPDATE_USER_ADDRESS', address }),
+    updateUserBalance: (balance) => dispatch({ type: 'UPDATE_USER_BALANCE', balance }),
     updateUserToken: (index, value) => dispatch({ type: 'UPDATE_USER_TOKEN', index, value }),
     openHelp: () => dispatch({ type: 'OPEN_HELP' }),
     closeOverlay: () => dispatch({ type: 'CLOSE_OVERLAY' }),

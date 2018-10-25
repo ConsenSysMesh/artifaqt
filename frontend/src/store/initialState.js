@@ -9,6 +9,7 @@ const initialState = {
   web3: {},
   user: {
     address: undefined,
+    balance: undefined,
     tokens: {
       0: true,
       1: false,

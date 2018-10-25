@@ -199,10 +199,15 @@ h1.animate-out {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .grid.solved .grid-back{
   display: flex;
+}
+
+.grid-front {
+  z-index: 2;
 }
 
 .grid-back {

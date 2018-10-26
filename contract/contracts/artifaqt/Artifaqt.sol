@@ -6,6 +6,9 @@ import "./../eip721/EIP721.sol";
 contract Artifaqt is EIP721 {
     address public admin;
 
+    // Bool to pause transfers
+    bool transferResumed = false;
+
     // Array holding the sin hashes
     bytes32[] private sins;
 
@@ -121,6 +124,60 @@ contract Artifaqt is EIP721 {
         return claimedTokens;
     }
 
+    // TODO: Do not allow any kind of transfers if transfer is paused
+    /// @notice Transfers the ownership of a token
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    /// @param data Additional data with no specified format, sent in call to `_to`
+    function safeTransferFrom(
+        address _from, 
+        address _to, 
+        uint256 _tokenId, 
+        bytes data
+    ) public payable transferAllowed {
+        super.safeTransferFrom(_from, _to, _tokenId, data);
+    }
+
+    /// @notice Transfers the ownership of an NFT from one address to another address
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    function safeTransferFrom(
+        address _from, 
+        address _to, 
+        uint256 _tokenId
+    ) public payable transferAllowed {
+        super.safeTransferFrom(_from, _to, _tokenId);
+    }
+
+    /// @notice Transfer ownership of an NFT -- THE CALLER IS RESPONSIBLE
+    ///  TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE
+    ///  THEY MAY BE PERMANENTLY LOST
+    /// @dev Calls the parent function if transfers are not paused
+    /// @param _from The current owner of the NFT
+    /// @param _to The new owner
+    /// @param _tokenId The NFT to transfer
+    function transferFrom(
+        address _from, 
+        address _to, 
+        uint256 _tokenId
+    ) public payable transferAllowed {
+        super.transferFrom(_from, _to, _tokenId);
+    }
+
+    /// @notice Enables or disables transfers
+    /// @dev Set to `true` to enable transfers or `false` to disable transfers. 
+    /// If it is set to `false` all functions that transfer tokens are paused and will revert.
+    /// Functions that approve transfers (`approve()` and `setTransferForAll()`) still work 
+    /// because they do not transfer tokens immediately.
+    /// @param _resume This should be set to `true` if transfers should be enabled, `false` otherwise
+    function allowTransfer(bool _resume) public onlyAdmin {
+        transferResumed = _resume;
+    }
+
     /// @notice Returns true of the `_player` has the requested `_tokenType`
     /// @dev
     /// @param _player The player's address
@@ -156,6 +213,11 @@ contract Artifaqt is EIP721 {
 
     modifier onlyAdmin() {
         require(msg.sender == admin);
+        _;
+    }
+
+    modifier transferAllowed() {
+        require(transferResumed);
         _;
     }
 }

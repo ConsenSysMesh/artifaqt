@@ -231,7 +231,7 @@ contract('Artifaqt', async (accounts) => {
         assert.equal(
             playerTokens + 2,
             (await artifaqt.balanceOf.call(player)).toNumber(),
-            'admin shound mint 2 more tokens for player',
+            'admin should mint 2 more tokens for player',
         );
 
         // Get token data
@@ -255,5 +255,67 @@ contract('Artifaqt', async (accounts) => {
         );
         assert.equal(token2Data[1], player, 'token 2 owner does not match player');
         assert.equal(token2Data[2], 1, 'token 2 type not as expected');
+    });
+
+    it('transfer pause: players should not be able to transfer or approve transfers', async () => {
+        // Admin mints token for player
+        const token = await artifaqt.mintToken(
+            player,
+            0,
+            { from: owner },
+        );
+
+        // Minted token id
+        const tokenId = token.logs[0].args._tokenId.toNumber();
+
+        // Player should not be able to transfer tokens
+        await assertRevert(
+            artifaqt.transferFrom(player, player2, tokenId, { from: player }),
+        );
+
+        // Safe transfer should fail
+        // ! This code is different because truffle handles overloaded functions in a different way
+        let safeTransferFrom = false;
+        try {
+            artifaqt.contract.safeTransferFrom['address,address,uint256'](player, player2, tokenId, { from: player, gas: 0x0FFFFF });
+            artifaqt.contract.safeTransferFrom['address,address,uint256,bytes'](player, player2, tokenId, '', { from: player, gas: 0x0FFFFF });
+        } catch (e) {
+            safeTransferFrom = true;
+        }
+        assert.isTrue(
+            safeTransferFrom,
+        );
+
+        // Player still owns the token
+        assert.equal(
+            await artifaqt.ownerOf(tokenId),
+            player,
+            'player did not transfer token',
+        );
+    });
+
+    it('transfer pause: admin should be able to resume transfers', async () => {
+        // Admin mints token for player
+        const token = await artifaqt.mintToken(
+            player,
+            0,
+            { from: owner },
+        );
+
+        // Minted token id
+        const tokenId = token.logs[0].args._tokenId.toNumber();
+
+        // Admin resumes transfers
+        await artifaqt.allowTransfer(true, { from: owner });
+
+        // Player is able to sent token
+        await artifaqt.transferFrom(player, player2, tokenId, { from: player });
+
+        // Player2 owns the token
+        assert.equal(
+            await artifaqt.ownerOf(tokenId),
+            player2,
+            'player2 should own the token',
+        );
     });
 });

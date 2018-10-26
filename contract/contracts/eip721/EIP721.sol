@@ -68,7 +68,7 @@ contract EIP721 is EIP721Interface, EIP721MetadataInterface, EIP721EnumerableInt
     /// @param _from The current owner of the NFT
     /// @param _to The new owner
     /// @param _tokenId The NFT to transfer
-    function transferFrom(address _from, address _to, uint256 _tokenId) external payable
+    function transferFrom(address _from, address _to, uint256 _tokenId) public payable
     tokenExists(_tokenId)
     allowedToTransfer(_from, _to, _tokenId) {
         //transfer token
@@ -87,7 +87,7 @@ contract EIP721 is EIP721Interface, EIP721MetadataInterface, EIP721EnumerableInt
     /// @param _to The new owner
     /// @param _tokenId The NFT to transfer
     /// @param data Additional data with no specified format, sent in call to `_to`
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) external payable
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) public payable
     tokenExists(_tokenId)
     allowedToTransfer(_from, _to, _tokenId) {
         settleTransfer(_from, _to, _tokenId);
@@ -107,7 +107,7 @@ contract EIP721 is EIP721Interface, EIP721MetadataInterface, EIP721EnumerableInt
     /// @param _from The current owner of the NFT
     /// @param _to The new owner
     /// @param _tokenId The NFT to transfer
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public payable
     tokenExists(_tokenId)
     allowedToTransfer(_from, _to, _tokenId) {
         settleTransfer(_from, _to, _tokenId);

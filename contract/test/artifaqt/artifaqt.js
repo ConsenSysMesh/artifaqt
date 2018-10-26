@@ -283,6 +283,28 @@ contract('Artifaqt', async (accounts) => {
         );
     });
 
+    it('after party: admin should not be able to mint more tokens after the party', async () => {
+        const mockArtifaqt = await MockArtifaqtTimeContract.new({ from: owner });
+
+        // Compute how many seconds to advance in the future
+        moment.tz.setDefault('Europe/London');
+        const cutoffTime = moment('2018-11-02 00:00:00');
+        const currentTime = moment();
+        const advanceTime = cutoffTime.diff(currentTime, 'seconds') + 10;
+
+        // Time travel
+        await mockArtifaqt.travelBackInTime(advanceTime);
+
+        // Admin should not be allowed to mint more tokens after the party
+        assertRevert(
+            mockArtifaqt.mintToken(
+                player,
+                0,
+                { from: owner },
+            ),
+        );
+    });
+
     it('transfer pause: players should not be able to transfer or approve transfers', async () => {
         // Admin mints token for player
         const token = await artifaqt.mintToken(

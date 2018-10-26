@@ -50,7 +50,7 @@ contract Artifaqt is EIP721 {
     }
 
     /// @notice Claim tokens by providing the sin payload
-    /// @dev Reverts unless the payload was correctly created
+    /// @dev Reverts unless the payload was correctly created. Reverts after the party is over and no more tokens should be created.
     /// @param _sinPayload = keccak256(keccak256(sin) + playerAddress)
     /// sin must be one of strings hashed in the constructor that the player will find scattered across the DevCon4 conference
     function claimToken(
@@ -80,13 +80,13 @@ contract Artifaqt is EIP721 {
     }
 
     /// @notice The admin can generate tokens for players
-    /// @dev Reverts unless the user already has the token type
+    /// @dev Reverts unless the user already has the token type. Reverts unless the minting happens withing the minting allowed time period.
     /// @param _to The player's address
     /// @param _tokenType A number from 0 to 8 representing the sin type
     function mintToken(
         address _to,
         uint256 _tokenType
-    ) external onlyAdmin {
+    ) external onlyAdmin mintingAllowed {
         // Create and add token
         uint256 tokenId = totalSupply();
         addToken(_to, tokenId, _tokenType);

@@ -1,8 +1,13 @@
+const moment = require('moment-timezone');
+const { sins } = require('./config');
 const { assertRevert } = require('../helpers/assertRevert');
 const { createClaimTokenPayload } = require('../helpers/artifaqt');
-const { sins } = require('./config');
 
+// Artifaqt contract
 const ArtifaqtContract = artifacts.require('Artifaqt');
+
+// Mock contract to simulate time travel
+const MockArtifaqtTimeContract = artifacts.require('MockArtifaqtTime');
 
 // Account that deploys the contract
 let owner;
@@ -255,5 +260,26 @@ contract('Artifaqt', async (accounts) => {
         );
         assert.equal(token2Data[1], player, 'token 2 owner does not match player');
         assert.equal(token2Data[2], 1, 'token 2 type not as expected');
+    });
+
+    it('after party: should not allow minting after the party', async () => {
+        const mockArtifaqt = await MockArtifaqtTimeContract.new({ from: owner });
+
+        // Compute how many seconds to advance in the future
+        moment.tz.setDefault('Europe/London');
+        const cutoffTime = moment('2018-11-02 00:00:00');
+        const currentTime = moment();
+        const advanceTime = cutoffTime.diff(currentTime, 'seconds') + 10;
+
+        // Time travel
+        await mockArtifaqt.travelBackInTime(advanceTime);
+
+        // Claiming tokens should not work anymore
+        assertRevert(
+            mockArtifaqt.claimToken(
+                createClaimTokenPayload(sins[0], player),
+                { from: player },
+            ),
+        );
     });
 });

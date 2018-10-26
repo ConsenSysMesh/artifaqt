@@ -12,6 +12,9 @@ contract Artifaqt is EIP721 {
     // Mapping from token ID to token type
     mapping(uint256 => uint256) internal typeOfToken;
 
+    // Cutoff minting time
+    uint256 cutoffMintingTime = 1541116800;
+
     /// @notice Contract constructor
     /// @dev Generates the keccak256 hashes of each sin that will be used
     /// when claiming tokens. Saves the admin. Sets a name and symbol.
@@ -49,7 +52,7 @@ contract Artifaqt is EIP721 {
     /// sin must be one of strings hashed in the constructor that the player will find scattered across the DevCon4 conference
     function claimToken(
         bytes32 _sinPayload
-    ) external {
+    ) external mintingAllowed {
         // Make sure it's the correct sin
         uint256 tokenType;
         bool found = false;
@@ -156,6 +159,11 @@ contract Artifaqt is EIP721 {
 
     modifier onlyAdmin() {
         require(msg.sender == admin);
+        _;
+    }
+
+    modifier mintingAllowed() {
+        require(block.timestamp <= cutoffMintingTime);
         _;
     }
 }

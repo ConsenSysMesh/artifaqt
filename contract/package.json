@@ -8,12 +8,9 @@
     },
     "scripts": {
         "dev": "docker run -d --name ganache -p 7545:8545 trufflesuite/ganache-cli:latest --seed=42 --gasPrice=1 --networkId=42",
-        "dev-start": "docker start ganache",
-        "dev-stop": "docker rm -f ganache",
         "compile": "truffle compile",
-        "migrate": "truffle migrate --network=ganache --reset",
-        "test": "truffle test --network=ganache",
-        "test:artifaqt": "truffle test --network=ganache ./test/artifaqt/*",
+        "test": "truffle test",
+        "test:artifaqt": "truffle test ./test/artifaqt/*",
         "fix:js": "eslint --fix test/** migrations/**",
         "lint:js": "eslint test/** migrations/**",
         "lint:sol": "solhint contracts/*.sol contracts/*/*.sol test/*.sol test/*/*.sol",
@@ -33,7 +30,9 @@
         "solidity-coverage": "^0.5.11",
         "stats-lite": "^2.2.0",
         "truffle": "^4.1.14",
-        "truffle-hdwallet-provider": "0.0.6"
+        "truffle-hdwallet-provider": "0.0.6",
+        "moment": "^2.22.2",
+        "moment-timezone": "^0.5.21"
     },
     "repository": {
         "type": "git",

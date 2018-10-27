@@ -8,9 +8,9 @@ import reducer from './reducer';
 import initialState from './initialState';
 
 
-const logger = activateLogger ?
-  createLogger({ stateTransformer: state => Map(state).toJS() }) :
-  store => next => action => (next(action)); // eslint-disable-line no-unused-vars
+// const logger = activateLogger ?
+//   createLogger({ stateTransformer: state => Map(state).toJS() }) :
+//   store => next => action => (next(action)); // eslint-disable-line no-unused-vars
 
 export let store = createStore(reducer, fromJS(initialState))
   // compose(applyMiddleware(logger)));

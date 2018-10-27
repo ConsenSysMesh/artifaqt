@@ -71,8 +71,10 @@ class App extends Component {
           window.web3.currentProvider
           .scanQRCode(/(.+$)/)
           .then(data => {
-            console.log('QR Scanned:', data)
-            claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
+            // console.log('QR Scanned:', data)
+            setTimeout(() => {
+              claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved);
+            }, 2000)
           })
           .catch(err => {
             console.log('Error:', err)

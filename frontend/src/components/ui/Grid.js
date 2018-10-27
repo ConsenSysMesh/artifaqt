@@ -29,11 +29,11 @@ class Grid extends Component {
               <h3>Aqcess Toqen</h3>
               <h5>Good for 2 persons</h5>
               <p>
-                <span>QonsenSys HQ</span>
+                <span>Prague Market</span>
                 <br />
-                <span>49 Bogart Street</span>
+                <span>Bubenské nábřeží 306/13</span>
                 <br />
-                <span>Brooklyn NY</span>
+                <span>170 00 Praha 7-Holešovice</span>
               </p>
             </div>
           </div>

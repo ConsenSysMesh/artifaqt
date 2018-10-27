@@ -5,6 +5,7 @@ import Grid from '../ui/Grid';
 import Video from '../ui/Video';
 import Info from '../ui/Info';
 import Network from '../ui/Network';
+import EmailInput from '../ui/EmailInput';
 import { requiredNetworkId } from '../../config';
 import { Artifaqt, web3, claimToken, keys } from '../../web3';
 import allTokensReducer from '../../utils';
@@ -63,20 +64,29 @@ class App extends Component {
     }
   }
 
+  returnPromiseData() {
+    return new Promise((res, rej) => {
+      res('Those consumed by anger and hatred.');
+    })
+  }
+
   claimToken() {
     const { address, balance, tokenClaimed, receiptRecieved } = this.props;
     if (window.web3 !== undefined) {
       if (this.state.mobileBrowser) {
         if (balance > 0) {
+          // this.returnPromiseData()
           window.web3.currentProvider
           .scanQRCode(/(.+$)/)
           .then(data => {
-            console.log('QR Scanned:', data)
-            claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
+            setTimeout(() => {
+              claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
+            }, 2000)
+            // console.log('QR Scanned:', data)
           })
-          .catch(err => {
-            console.log('Error:', err)
-          })
+          // .catch(err => {
+          //   console.log('Error:', err)
+          // })
         } else {
           alert(`You don't own any ETH - NO PAY, NO PLAY`);
         }
@@ -148,6 +158,7 @@ class App extends Component {
     ));
   }
 }
+{/* <EmailInput /> */}
 
 const mapStateToProps = (state) => ({
   readyToPlay: state.getIn(['user', 'tokens']).reduce(allTokensReducer),

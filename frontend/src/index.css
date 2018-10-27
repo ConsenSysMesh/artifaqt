@@ -10,6 +10,11 @@ body {
  	box-sizing: border-box;
 }
 
+h1 {
+  font-style: italic;
+  letter-spacing: 5px;
+}
+
 h3 {
   margin-bottom: 0;
 }
@@ -20,9 +25,65 @@ ol {
 }
 
 li {
-  list-style: none;
+  list-style: upper-roman;
   font-style: italic;
 }
+
+/* Wrong network message */
+.network {
+  color: white;
+  font-size: 1.3em;
+  display: flex;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.network-message {
+  max-width: 500px;
+  text-align: center
+}
+
+
+
+/* buttons */
+button {
+  font-family: 'Lora', serif;
+  padding: 10px 16px;
+  outline: none;
+  font-size: 32px;
+  box-shadow: none;
+  transition: all 200ms linear;
+  color: white;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* claim button */
+.claim-button-container button {
+  border: 3px solid white;
+  background: black;
+  font-family: 'Lora', serif;
+}
+
+.claim-button-container button:hover {
+  background: white;
+  color: black;
+}
+
+.how-top-play-container button {
+  font-size: 16px;
+  background: transparent;
+  border: 0;
+}
+
+
+
+
 
 .App {
 	top: 0;
@@ -32,7 +93,43 @@ li {
   position: fixed;
 }
 
-.background-video, .grid-container, .introductory-container {
+.claim-button-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transition: all 200ms ease-in;
+}
+
+.claim-button-container.animate-out {
+  bottom: -100px;
+}
+
+h1 {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transition: all 200ms ease-in;
+}
+
+h1.animate-out {
+  top: -100px;
+}
+
+.how-top-play-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+
+
+
+.background-video, .grid-container, .infomation-container {
   top: 0;
   bottom: 0;
   right: 0;
@@ -43,17 +140,26 @@ li {
   justify-content: center;
   overflow: hidden;
   z-index: -1;
-}
-
-.introductory-container {
   text-align: center;
-  z-index: 1;
-  text-shadow: 0 0 5px black;
-  transition: all 1.5s ease-in;
 }
 
-.introductory-container.animate-out {
+.infomation-container {
+  text-align: center;
+  z-index: 2;
+  text-shadow: 0 0 5px black;
+  /*transition: all 1.5s ease-in;*/
+  transition: transform 200ms ease-in;
+  background: rgba(0,0,0,0.9);
+  padding: 80px 30px;
+  transform: translateY(-100%);
+  overflow: scroll;
+}
+.infomation-container.animate-out {
   transform: rotate(3600deg) scale(0);
+}
+
+.infomation-container.visible {
+  transform: translateY(0%);
 }
 
 .background-video.hidden {
@@ -63,34 +169,97 @@ li {
 .background-video {
   z-index: -1;
   transition: opacity 3s linear;
+  background: url(./assets/flames.gif) center;
+  background-size: cover;
 }
 
 .grid {
   width: 300px;
 	height: 300px;
 	position: relative;
+  margin: 20px auto;
+  perspective: 1000px;
 }
 
-button {
-	border: 3px solid white;
-  padding: 10px 16px;
+.grid-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.grid.solved.flipped .grid-inner {
+  transform: rotateY(180deg);
+}
+
+.grid-front, .grid-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.grid.solved .grid-back{
+  display: flex;
+}
+
+.grid-front {
+  z-index: 2;
+}
+
+.grid-back {
+  display: none;
+  transform: rotateY(180deg);
   background: black;
-  color: white;
-  font-family: 'Lora', serif;
-  outline: none;
-  box-shadow: none;
-  font-size: 32px;
-  transition: all 200ms linear;
+  padding: 5px;
+  border: 2px solid white;
+  align-items: center;
 }
 
-button:hover {
-  cursor: pointer;
-  background: white;
-  color: black;
+.full-width {
+  width: 100%;
 }
+
+
 
 h3 {
   margin-bottom: 0px;
+  letter-spacing: 3px;
+  font-style: italic;
+}
+
+/* info section */
+.title-section {
+  position: relative;
+  height: 100px;
+}
+
+.title-section .tile-container {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+
+.title-section h2 {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 5px black;
+  letter-spacing: 4px;
+  font-style: italic;
 }
 
 
@@ -104,6 +273,23 @@ h3 {
 	background: white;
 	position: absolute;
 	transition: all 100ms linear;
+}
+
+.tile.tile-info {
+  border: 2px solid white;
+  position: relative;
+  z-index: 0;
+}
+
+.tile.tile-info.tile-0 {
+  background: black;
+}
+
+.tile.pulsing {
+  animation-name: pulse;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
 }
 
 .tile.initial-animate {
@@ -126,10 +312,15 @@ h3 {
   right: 0;
   left: 0;
   z-index: -1;
+  transition: all 100ms linear;
 }
 
-.tile:not(.initial-animate)::after {
+.tile:not(.initial-animate):not(.solved)::after {
   box-shadow: 0 0 23px gold;
+}
+
+.tile.tile-info:not(.initial-animate)::after {
+  box-shadow: 0 0 23px white;
 }
 
 .tile-0::after {
@@ -178,10 +369,14 @@ h3 {
 }
 .tile-0{
   /* TODO: add back when puzzle is solved; */
-  /*background: url("./assets/5.jpg") no-repeat center center;*/
   background: transparent;
   background-size: contain;
+  transform: all 1.5s linear;
 }
+/*.tile-0.solved{
+  background: url("./assets/5.jpg") no-repeat center center;
+  background-size: contain;
+}*/
 
 .tile-1::before{
   background: url("./assets/1.jpg") no-repeat center center;
@@ -219,4 +414,10 @@ h3 {
   /* TODO: add back when puzzle is solved; */
   background: url("./assets/5.jpg") no-repeat center center;
   background-size: contain;
+}
+
+@keyframes pulse {
+  0%    {opacity: 1;}
+  50%   {opacity: 0.8;}
+  100%  {opacity: 1;}
 }

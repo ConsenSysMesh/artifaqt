@@ -74,7 +74,7 @@ class App extends Component {
             // console.log('QR Scanned:', data)
             setTimeout(() => {
               claimToken(data, address, this.fetchUserAccounts, tokenClaimed, receiptRecieved);
-            }, 2000)
+            }, 1000)
           })
           .catch(err => {
             console.log('Error:', err)

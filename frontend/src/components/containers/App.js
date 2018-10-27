@@ -8,9 +8,9 @@ import Network from '../ui/Network';
 import { requiredNetworkId } from '../../config';
 import { Artifaqt, web3, claimToken, keys } from '../../web3';
 import allTokensReducer from '../../utils';
+import EmailInput from '../ui/EmailInput';
 
 
-// let start = 0;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -56,7 +56,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.readyToPlay && this.props.readyToPlay) {
+    if (!prevProps.readyToPlay && this.props.readyToPlay && !this.props.solved) {
       setTimeout(() => {
         this.props.mixUp()
       }, 1000);
@@ -85,10 +85,6 @@ class App extends Component {
       } else {
         alert(`Apparently you are not using an Ethereum mobile browser.
         Please use Cipher or Status.`);
-        // console.log('sin:', keys[start]);
-        // claimToken(keys[start], address, this.fetchUserAccounts, tokenClaimed, receiptRecieved)
-        // start += 1;
-
       }
     }
   }
@@ -118,13 +114,18 @@ class App extends Component {
     const { updateUserToken } = this.props;
     Artifaqt.methods.getTokenTypes(address).call()
     .then(res => {
-      res.forEach(tokenIndex => updateUserToken(parseInt(tokenIndex) + 1, true))
+      res.forEach(tokenIndex => {
+        if (tokenIndex === '8') tokenIndex = 0;
+        else tokenIndex = parseInt(tokenIndex) + 1;
+        updateUserToken(tokenIndex, true);
+      })
     })
   }
 
   render() {
-    const { readyToPlay, displayTileInfo, activeTileInfo, activeNumber, help, solved } = this.props;
+    const { readyToPlay, displayTileInfo, activeTileInfo, activeNumber, help, solved, hasLastToken } = this.props;
     const { onRequiredNetwork, web3Loading } = this.state;
+    const animateOut = (readyToPlay && !solved) ? 'animate-out' : '';
     return (
       !onRequiredNetwork ? <Network loading={web3Loading}/> : (
       <div className="App">
@@ -141,9 +142,12 @@ class App extends Component {
             <button onClick={() => this.props.openHelp()}>?&#191;?</button>
           </div>
           <Grid solved={solved} />
-          <h1 className={readyToPlay ? 'animate-out': ''}>artifaqts</h1>
-          <div className={`claim-button-container ${readyToPlay ? 'animate-out': ''}`}>
-            <button onClick={() => this.claimToken()}>scan qr code</button>
+          <h1 className={animateOut}>artifaqts</h1>
+          <div className={`claim-button-container ${animateOut}`}>
+            {hasLastToken
+              ? <EmailInput />
+              : <button onClick={() => this.claimToken()}>scan qr code</button>
+            }
           </div>
         </div>
       </div>
@@ -161,6 +165,7 @@ const mapStateToProps = (state) => ({
   activeNumber: state.getIn(['tokenInformation', 'activeNumber']),
   help: state.getIn(['tokenInformation', 'help']),
   solved: state.get('solved'),
+  hasLastToken: state.getIn(['user', 'tokens', '0']),
 });
 
 const mapDispatchToProps = (dispatch) => ({

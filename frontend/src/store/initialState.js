@@ -4,14 +4,14 @@ const initialState = {
     [4, 0, 5],
     [6, 7, 8],
   ],
-  solved: false,
+  solved: window.localStorage.getItem('artifaqt') === 'solved' ? true : false,
   canInteract: false,
   web3: {},
   user: {
     address: undefined,
     balance: undefined,
     tokens: {
-      0: true,
+      0: false,
       1: false,
       2: false,
       3: false,

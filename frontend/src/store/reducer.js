@@ -18,7 +18,10 @@ const reducer = (state = fromJS(initialState), action) => {
         state = state.setIn(['grid', y, x], numToSwitch)
                     .setIn(['grid', action.y, action.x], 0);
         return state.update('solved', () => {
-                      if (Immutable.is(state.get('grid'), fromJS(initialState.grid))) return true;
+                      if (Immutable.is(state.get('grid'), fromJS(initialState.grid))) {
+                        window.localStorage.setItem('artifaqt', 'solved');
+                        return true;
+                      }
                       return false;
                     });
       }

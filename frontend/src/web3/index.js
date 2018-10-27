@@ -15,7 +15,7 @@ const sins = {
   "Those who worshipped false idols.": 6,
   "Those violent against others, one’s self, and God.": 7,
   "Those who used lies and deception for personal gain.": 8,
-  "Those who have betrayed their loved ones.": 9,
+  "Those who have betrayed their loved ones.": 0,
 }
 
 export const keys = Object.keys(sins);

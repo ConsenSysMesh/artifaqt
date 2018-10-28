@@ -179,8 +179,8 @@ h1.animate-out {
 .background-video {
   z-index: -1;
   transition: opacity 3s linear;
-  background: url(./assets/flames.gif) center;
-  background-size: cover;
+  /* background: url(./assets/flames.gif) center;
+  background-size: cover; */
 }
 
 .grid {
@@ -325,9 +325,9 @@ h3 {
   transition: all 100ms linear;
 }
 
-.tile:not(.initial-animate):not(.solved)::after {
+/* .tile:not(.initial-animate):not(.solved)::after {
   box-shadow: 0 0 23px gold;
-}
+} */
 
 .tile.tile-info:not(.initial-animate)::after {
   box-shadow: 0 0 23px white;

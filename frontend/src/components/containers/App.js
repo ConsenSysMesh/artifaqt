@@ -136,7 +136,7 @@ class App extends Component {
           activeNumber={activeNumber}
           help={help}
         />
-        <Video readyToPlay={readyToPlay && !solved} />
+        {/* <Video readyToPlay={readyToPlay && !solved} /> */}
         <div className="grid-container">
           <div className="how-top-play-container">
             <button onClick={() => this.props.openHelp()}>?&#191;?</button>

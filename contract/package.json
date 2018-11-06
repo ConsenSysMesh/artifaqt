@@ -10,6 +10,7 @@
         "dev": "docker run -d --name ganache -p 7545:8545 trufflesuite/ganache-cli:latest --seed=42 --gasPrice=1 --networkId=42",
         "compile": "truffle compile",
         "test": "truffle test",
+        "migrate": "truffle migrate",
         "test:artifaqt": "truffle test ./test/artifaqt/*",
         "fix:js": "eslint --fix test/** migrations/**",
         "lint:js": "eslint test/** migrations/**",
